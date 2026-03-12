@@ -1,8 +1,8 @@
-# fcitx5-ai-im 项目概览
+# ailater-im 项目概览
 
 ## 项目简介
 
-fcitx5-ai-im 是一个使用 Rust 开发的 Linux 输入法，专为 fcitx5 框架设计。它结合了传统拼音输入和现代 AI 技术，提供智能的中文输入体验。
+ailater-im 是一个使用 Rust 开发的 Linux 输入法，专为 fcitx5 框架设计。它结合了传统拼音输入和现代 AI 技术，提供智能的中文输入体验。
 
 ## 核心特性
 
@@ -150,7 +150,7 @@ llama-server -m qwen-0.5b-chat-q4_0.gguf --host 0.0.0.0 --port 8080
 
 ### 配置文件
 
-编辑 `~/.config/fcitx5-ai-im/config.toml`:
+编辑 `~/.config/ailater-im/config.toml`:
 
 ```toml
 [model]

@@ -1,7 +1,7 @@
-# fcitx5-ai-im Configuration
+# ailater-im Configuration
 # 
 # This is the default configuration file for the AI-powered input method.
-# Copy this file to ~/.config/fcitx5-ai-im/config.toml to customize.
+# Copy this file to ~/.config/ailater-im/config.toml to customize.
 
 [model]
 # Model type: "remote", "local", or "hybrid"
@@ -76,10 +76,10 @@ font_size = 12
 
 [dictionary]
 # System dictionary path
-system_dictionary = "/usr/share/fcitx5-ai-im/dict/system.dict"
+system_dictionary = "/usr/share/ailater-im/dict/system.dict"
 
 # User dictionary path
-user_dictionary = "~/.local/share/fcitx5-ai-im/user.dict"
+user_dictionary = "~/.local/share/ailater-im/user.dict"
 
 # Enable user dictionary learning
 enable_learning = true

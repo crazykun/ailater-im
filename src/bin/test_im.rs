@@ -6,7 +6,7 @@
 use ailater_im::prelude::*;
 
 fn main() {
-    println!("fcitx5-ai-im Test Program");
+    println!("ailater-im Test Program");
     println!("========================\n");
     
     // Initialize logging

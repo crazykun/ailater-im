@@ -1,5 +1,5 @@
 /*
- * fcitx5-ai-im - AI-powered input method for fcitx5
+ * ailater-im - AI-powered input method for fcitx5
  * 
  * Fcitx5 C API bindings for Rust
  */

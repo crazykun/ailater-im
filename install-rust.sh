@@ -1,5 +1,5 @@
 #!/bin/bash
-# Install Rust toolchain for building fcitx5-ai-im
+# Install Rust toolchain for building ailater-im
 
 set -e
 

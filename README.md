@@ -1,4 +1,4 @@
-# fcitx5-ai-im
+# ailater-im
 
 一个基于 Rust 开发的 fcitx5 智能输入法，支持 AI 模型预测。
 
@@ -33,8 +33,8 @@
 
 ```bash
 # 克隆仓库
-git clone https://github.com/your-repo/fcitx5-ai-im.git
-cd fcitx5-ai-im
+git clone https://github.com/your-repo/ailater-im.git
+cd ailater-im
 
 # 编译
 make build
@@ -63,7 +63,7 @@ cargo build --release --features full
 
 ### 配置文件位置
 
-配置文件位于 `~/.config/fcitx5-ai-im/config.toml`
+配置文件位于 `~/.config/ailater-im/config.toml`
 
 首次运行时会自动创建默认配置。
 
@@ -135,7 +135,7 @@ enable_phrase_prediction = true
 ## 项目结构
 
 ```
-fcitx5-ai-im/
+ailater-im/
 ├── src/
 │   ├── lib.rs          # 库入口
 │   ├── ffi.rs          # FFI 绑定
@@ -151,7 +151,7 @@ fcitx5-ai-im/
 │   ├── config.toml     # 示例配置
 │   └── system.dict     # 系统词典
 ├── conf/
-│   └── fcitx5-ai-im.conf  # fcitx5 插件配置
+│   └── ailater-im.conf  # fcitx5 插件配置
 ├── Cargo.toml          # Rust 项目配置
 ├── Makefile            # 构建脚本
 └── README.md           # 本文件
