@@ -6,15 +6,18 @@ PREFIX ?= /usr
 LIB_DIR = $(PREFIX)/lib/x86_64-linux-gnu/fcitx5
 DATA_DIR = $(PREFIX)/share/ailater-im
 ADDON_DIR = $(PREFIX)/share/fcitx5/addon
+INPUTMETHOD_DIR = $(PREFIX)/share/fcitx5/inputmethod
+ICON_DIR = $(PREFIX)/share/icons/hicolor
+ICON_SRC_DIR = src/img/icons
 
 # Rust target
 TARGET ?= release
 CARGO_FLAGS = --$(TARGET)
 
 # Features
-FEATURES ?= remote-model
+FEATURES ?= fcitx5,remote-model
 
-.PHONY: all build install uninstall clean test doc
+.PHONY: all build install uninstall uninstall-user clean test doc
 
 all: build
 
@@ -27,16 +30,35 @@ install: build
 	install -d $(DESTDIR)$(LIB_DIR)
 	install -d $(DESTDIR)$(DATA_DIR)/dict
 	install -d $(DESTDIR)$(ADDON_DIR)
+	install -d $(DESTDIR)$(INPUTMETHOD_DIR)
 	install -m 755 target/$(TARGET)/libailater_im.so $(DESTDIR)$(LIB_DIR)/
 	install -m 644 conf/ailater-im.conf $(DESTDIR)$(ADDON_DIR)/
+	install -m 644 conf/inputmethod/ailater-im.conf $(DESTDIR)$(INPUTMETHOD_DIR)/
 	install -m 644 data/system.dict $(DESTDIR)$(DATA_DIR)/dict/
 	install -m 644 data/config.toml $(DESTDIR)$(DATA_DIR)/
+	@echo "Installing icons..."
+	for size in 16 32 48 64 128; do \
+		install -d $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/apps; \
+		install -m 644 $(ICON_SRC_DIR)/$${size}x$${size}/apps/ailater-im.png $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/apps/; \
+	done
+	install -d $(DESTDIR)$(ICON_DIR)/scalable/apps
+	install -m 644 $(ICON_SRC_DIR)/scalable/apps/ailater-im.svg $(DESTDIR)$(ICON_DIR)/scalable/apps/
+	@echo "Updating icon cache..."
+	gtk-update-icon-cache $(DESTDIR)$(ICON_DIR) 2>/dev/null || true
 
 uninstall:
 	@echo "Uninstalling from $(PREFIX)..."
 	rm -f $(DESTDIR)$(LIB_DIR)/libailater_im.so
 	rm -f $(DESTDIR)$(ADDON_DIR)/ailater-im.conf
+	rm -f $(DESTDIR)$(INPUTMETHOD_DIR)/ailater-im.conf
 	rm -rf $(DESTDIR)$(DATA_DIR)
+	@echo "Removing icons..."
+	for size in 16 32 48 64 128; do \
+		rm -f $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/apps/ailater-im.png; \
+	done
+	rm -f $(DESTDIR)$(ICON_DIR)/scalable/apps/ailater-im.svg
+	@echo "Updating icon cache..."
+	gtk-update-icon-cache $(DESTDIR)$(ICON_DIR) 2>/dev/null || true
 
 clean:
 	cargo clean
@@ -79,10 +101,36 @@ install-user: build
 	install -d ~/.local/lib/x86_64-linux-gnu/fcitx5
 	install -d ~/.local/share/ailater-im/dict
 	install -d ~/.local/share/fcitx5/addon
+	install -d ~/.local/share/fcitx5/inputmethod
 	install -m 755 target/$(TARGET)/libailater_im.so ~/.local/lib/x86_64-linux-gnu/fcitx5/
 	install -m 644 conf/ailater-im.conf ~/.local/share/fcitx5/addon/
+	install -m 644 conf/inputmethod/ailater-im.conf ~/.local/share/fcitx5/inputmethod/
 	install -m 644 data/system.dict ~/.local/share/ailater-im/dict/
 	install -m 644 data/config.toml ~/.local/share/ailater-im/
+	@echo "Installing icons..."
+	for size in 16 32 48 64 128; do \
+		install -d ~/.local/share/icons/hicolor/$${size}x$${size}/apps; \
+		install -m 644 $(ICON_SRC_DIR)/$${size}x$${size}/apps/ailater-im.png ~/.local/share/icons/hicolor/$${size}x$${size}/apps/; \
+	done
+	install -d ~/.local/share/icons/hicolor/scalable/apps
+	install -m 644 $(ICON_SRC_DIR)/scalable/apps/ailater-im.svg ~/.local/share/icons/hicolor/scalable/apps/
+	@echo "Updating icon cache..."
+	gtk-update-icon-cache ~/.local/share/icons/hicolor 2>/dev/null || true
+
+# Uninstall from user directory
+uninstall-user:
+	@echo "Uninstalling from user directory..."
+	rm -f ~/.local/lib/x86_64-linux-gnu/fcitx5/libailater_im.so
+	rm -f ~/.local/share/fcitx5/addon/ailater-im.conf
+	rm -f ~/.local/share/fcitx5/inputmethod/ailater-im.conf
+	rm -rf ~/.local/share/ailater-im
+	@echo "Removing icons..."
+	for size in 16 32 48 64 128; do \
+		rm -f ~/.local/share/icons/hicolor/$${size}x$${size}/apps/ailater-im.png; \
+	done
+	rm -f ~/.local/share/icons/hicolor/scalable/apps/ailater-im.svg
+	@echo "Updating icon cache..."
+	gtk-update-icon-cache ~/.local/share/icons/hicolor 2>/dev/null || true
 
 # Create distribution archive
 dist: release
@@ -103,6 +151,7 @@ help:
 	@echo "  install      - Install to system (requires root)"
 	@echo "  install-user - Install to user directory"
 	@echo "  uninstall    - Remove from system"
+	@echo "  uninstall-user - Remove from user directory"
 	@echo "  clean        - Clean build artifacts"
 	@echo "  test         - Run tests"
 	@echo "  doc          - Generate documentation"
