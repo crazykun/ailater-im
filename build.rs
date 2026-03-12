@@ -56,9 +56,15 @@ fn main() {
         // Link standard C++ library
         println!("cargo:rustc-link-lib=dylib=stdc++");
         
-        // Link the static library
+        // Link the static library with whole-archive to ensure all symbols are included
+        // This is necessary because fcitx_addon_factory_instance is not referenced from Rust
         println!("cargo:rustc-link-search=native={}", out_dir);
         println!("cargo:rustc-link-lib=static=ffi_wrapper");
+
+        // Use version script to force export the fcitx_addon_factory_instance symbol
+        let manifest_dir = std::env::var("CARGO_MANIFEST_DIR").unwrap();
+        let version_script = format!("{}/fcitx5.sym", manifest_dir);
+        println!("cargo:rustc-link-arg=-Wl,--version-script={}", version_script);
     }
     
     println!("cargo:rerun-if-changed=src/ffi_wrapper.cpp");

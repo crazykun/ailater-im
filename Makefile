@@ -37,12 +37,12 @@ install: build
 	install -m 644 data/system.dict $(DESTDIR)$(DATA_DIR)/dict/
 	install -m 644 data/config.toml $(DESTDIR)$(DATA_DIR)/
 	@echo "Installing icons..."
-	for size in 16 32 48 64 128; do \
+	for size in 16 22 24 48; do \
 		install -d $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/apps; \
-		install -m 644 $(ICON_SRC_DIR)/$${size}x$${size}/apps/ailater-im.png $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/apps/; \
+		install -m 644 $(ICON_SRC_DIR)/$${size}x$${size}/apps/ailater-im.png $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/apps/org.fcitx.Fcitx5.ailater-im.png; \
 	done
 	install -d $(DESTDIR)$(ICON_DIR)/scalable/apps
-	install -m 644 $(ICON_SRC_DIR)/scalable/apps/ailater-im.svg $(DESTDIR)$(ICON_DIR)/scalable/apps/
+	install -m 644 $(ICON_SRC_DIR)/scalable/apps/ailater-im.svg $(DESTDIR)$(ICON_DIR)/scalable/apps/org.fcitx.Fcitx5.ailater-im.svg
 	@echo "Updating icon cache..."
 	gtk-update-icon-cache $(DESTDIR)$(ICON_DIR) 2>/dev/null || true
 
@@ -53,10 +53,10 @@ uninstall:
 	rm -f $(DESTDIR)$(INPUTMETHOD_DIR)/ailater-im.conf
 	rm -rf $(DESTDIR)$(DATA_DIR)
 	@echo "Removing icons..."
-	for size in 16 32 48 64 128; do \
-		rm -f $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/apps/ailater-im.png; \
+	for size in 16 22 24 48; do \
+		rm -f $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/apps/org.fcitx.Fcitx5.ailater-im.png; \
 	done
-	rm -f $(DESTDIR)$(ICON_DIR)/scalable/apps/ailater-im.svg
+	rm -f $(DESTDIR)$(ICON_DIR)/scalable/apps/org.fcitx.Fcitx5.ailater-im.svg
 	@echo "Updating icon cache..."
 	gtk-update-icon-cache $(DESTDIR)$(ICON_DIR) 2>/dev/null || true
 
@@ -108,12 +108,12 @@ install-user: build
 	install -m 644 data/system.dict ~/.local/share/ailater-im/dict/
 	install -m 644 data/config.toml ~/.local/share/ailater-im/
 	@echo "Installing icons..."
-	for size in 16 32 48 64 128; do \
+	for size in 16 22 24 48; do \
 		install -d ~/.local/share/icons/hicolor/$${size}x$${size}/apps; \
-		install -m 644 $(ICON_SRC_DIR)/$${size}x$${size}/apps/ailater-im.png ~/.local/share/icons/hicolor/$${size}x$${size}/apps/; \
+		install -m 644 $(ICON_SRC_DIR)/$${size}x$${size}/apps/ailater-im.png ~/.local/share/icons/hicolor/$${size}x$${size}/apps/org.fcitx.Fcitx5.ailater-im.png; \
 	done
 	install -d ~/.local/share/icons/hicolor/scalable/apps
-	install -m 644 $(ICON_SRC_DIR)/scalable/apps/ailater-im.svg ~/.local/share/icons/hicolor/scalable/apps/
+	install -m 644 $(ICON_SRC_DIR)/scalable/apps/ailater-im.svg ~/.local/share/icons/hicolor/scalable/apps/org.fcitx.Fcitx5.ailater-im.svg
 	@echo "Updating icon cache..."
 	gtk-update-icon-cache ~/.local/share/icons/hicolor 2>/dev/null || true
 
@@ -125,10 +125,10 @@ uninstall-user:
 	rm -f ~/.local/share/fcitx5/inputmethod/ailater-im.conf
 	rm -rf ~/.local/share/ailater-im
 	@echo "Removing icons..."
-	for size in 16 32 48 64 128; do \
-		rm -f ~/.local/share/icons/hicolor/$${size}x$${size}/apps/ailater-im.png; \
+	for size in 16 22 24 48; do \
+		rm -f ~/.local/share/icons/hicolor/$${size}x$${size}/apps/org.fcitx.Fcitx5.ailater-im.png; \
 	done
-	rm -f ~/.local/share/icons/hicolor/scalable/apps/ailater-im.svg
+	rm -f ~/.local/share/icons/hicolor/scalable/apps/org.fcitx.Fcitx5.ailater-im.svg
 	@echo "Updating icon cache..."
 	gtk-update-icon-cache ~/.local/share/icons/hicolor 2>/dev/null || true
 
