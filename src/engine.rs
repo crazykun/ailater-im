@@ -226,22 +226,18 @@ impl InputEngine {
         IMReturnValue::Consume
     }
     
-    /// Handle return key
+    /// Handle return key - commit raw pinyin (English)
     fn handle_return(&self, state: &mut InputState) -> IMReturnValue {
         if !state.is_active || state.preedit.is_empty() {
             return IMReturnValue::Forward;
         }
-        
-        // Commit first candidate or raw input
-        if let Some(candidate) = state.candidates.first().cloned() {
-            self.commit_candidate(state, &candidate);
-        } else {
-            // Commit raw pinyin
-            state.context.push_str(&state.preedit);
-            state.preedit.clear();
-            state.is_active = false;
-        }
-        
+
+        // Always commit raw pinyin (English) on Enter
+        state.context.push_str(&state.preedit);
+        state.preedit.clear();
+        state.candidates.clear();
+        state.is_active = false;
+
         IMReturnValue::Consume
     }
     

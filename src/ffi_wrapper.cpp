@@ -1,6 +1,6 @@
 /*
  * ailater-im - C++ wrapper for fcitx5 plugin
- * 
+ *
  * This file provides the C++ interface that fcitx5 expects,
  * and forwards calls to the Rust implementation.
  */
@@ -18,6 +18,7 @@
 
 #include <string>
 #include <memory>
+#include <vector>
 
 // External Rust functions
 extern "C" {
@@ -32,68 +33,89 @@ extern "C" {
 
 namespace fcitx {
 
+// Custom CandidateWord that calls Rust engine when selected
+class AilaterCandidateWord : public CandidateWord {
+public:
+    AilaterCandidateWord(const std::string& text, int index, void* engine, InputContext* ic)
+        : CandidateWord(Text(text)), index_(index), engine_(engine), ic_(ic) {}
+
+    void select(InputContext* inputContext) const override {
+        // Simulate number key press to select this candidate
+        // keysym for '1' is 0x31, so for index 0 we use 0x31, etc.
+        uint32_t keysym = 0x30 + (index_ + 1);
+        ailater_engine_handle_key(engine_, ic_, keysym, 0, 0, false);
+        // Force UI update
+        inputContext->updateUserInterface(UserInterfaceComponent::InputPanel);
+    }
+
+private:
+    int index_;
+    void* engine_;
+    InputContext* ic_;
+};
+
 class AilaterEngine : public InputMethodEngineV2 {
 public:
     AilaterEngine(Instance* instance) : instance_(instance) {
         engine_ = ailater_engine_create(instance);
         FCITX_INFO() << "AilaterEngine created";
     }
-    
+
     ~AilaterEngine() override {
         if (engine_) {
             ailater_engine_destroy(engine_);
         }
         FCITX_INFO() << "AilaterEngine destroyed";
     }
-    
+
     void activate(const InputMethodEntry& entry, InputContextEvent& event) override {
         FCITX_UNUSED(entry);
         FCITX_UNUSED(event);
         FCITX_INFO() << "AilaterEngine activated";
     }
-    
+
     void deactivate(const InputMethodEntry& entry, InputContextEvent& event) override {
         FCITX_UNUSED(entry);
         FCITX_UNUSED(event);
         FCITX_INFO() << "AilaterEngine deactivated";
     }
-    
+
     void keyEvent(const InputMethodEntry& entry, KeyEvent& keyEvent) override {
         FCITX_UNUSED(entry);
-        
+
         auto* ic = keyEvent.inputContext();
         Key key = keyEvent.key();
-        
+
         if (keyEvent.isRelease()) {
             return;
         }
-        
+
         uint32_t keysym = key.sym();
         uint32_t keycode = key.code();
         uint32_t state = 0;
-        
+
         if (key.states().test(KeyState::Shift)) state |= (1 << 0);
         if (key.states().test(KeyState::Ctrl)) state |= (1 << 1);
         if (key.states().test(KeyState::Alt)) state |= (1 << 2);
         if (key.states().test(KeyState::Super)) state |= (1 << 3);
-        
+
         int result = ailater_engine_handle_key(engine_, ic, keysym, keycode, state, keyEvent.isRelease());
-        
+
         if (result == 2) {  // CONSUME
             keyEvent.filterAndAccept();
         } else if (result == 1) {  // FORWARD
             keyEvent.filter();
         }
-        
+
         updateUI(ic);
     }
-    
+
     void reset(const InputMethodEntry& entry, InputContextEvent& event) override {
         FCITX_UNUSED(entry);
         ailater_engine_reset(engine_, event.inputContext());
         updateUI(event.inputContext());
     }
-    
+
     void updateUI(InputContext* ic) {
         // Get preedit text from Rust
         const char* preedit = ailater_engine_get_preedit(engine_, ic);
@@ -106,15 +128,27 @@ public:
         // Get candidates from Rust and populate candidate list
         const char** candidates = ailater_engine_get_candidates(engine_, ic);
         if (candidates && *candidates) {
-            // Build vector of candidate strings
-            std::vector<std::string> candidateStrings;
-            for (int i = 0; candidates[i] != nullptr; i++) {
-                candidateStrings.push_back(candidates[i]);
+            auto candidateList = std::make_unique<CommonCandidateList>();
+
+            // Get page size from fcitx5 global config
+            int pageSize = instance_->globalConfig().defaultPageSize();
+            candidateList->setPageSize(pageSize);
+
+            // Set labels to 1-pageSize (e.g., "1", "2", ..., "9" for page size 9)
+            std::vector<std::string> labels;
+            for (int i = 0; i < pageSize && i < 9; i++) {
+                labels.push_back(std::to_string(i + 1));
+            }
+            candidateList->setLabels(labels);
+
+            // Add candidates (up to page size)
+            for (int i = 0; candidates[i] != nullptr && i < pageSize; i++) {
+                auto candidateWord = std::make_unique<AilaterCandidateWord>(
+                    candidates[i], i, engine_, ic
+                );
+                candidateList->append(std::move(candidateWord));
             }
 
-            // Use DisplayOnlyCandidateList for simple display
-            auto candidateList = std::make_unique<DisplayOnlyCandidateList>();
-            candidateList->setContent(std::move(candidateStrings));
             candidateList->setCursorIndex(0);
             ic->inputPanel().setCandidateList(std::move(candidateList));
         } else {
