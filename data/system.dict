@@ -1,6 +1,6 @@
 # ailater-im System Dictionary
 # Format: word<TAB>pinyin<TAB>frequency<TAB>last_used
-# Total entries: 438
+# Total entries: 2500+
 
 啊	a	100	0
 阿	a	95	0
@@ -1475,3 +1475,2448 @@
 座	zuo	90	0
 左	zuo	85	0
 作	zuo	69	0
+
+啊	a	100	0
+阿	a	95	0
+呵	a	90	0
+腌	a	85	0
+
+爱	ai	100	0
+艾	ai	95	0
+哎	ai	90	0
+唉	ai	85	0
+矮	ai	80	0
+碍	ai	75	0
+艾	ai	70	0
+
+安	an	100	0
+按	an	95	0
+暗	an	90	0
+岸	an	85	0
+案	an	80	0
+俺	an	75	0
+
+昂	ang	100	0
+盎	ang	95	0
+
+傲	ao	100	0
+奥	ao	95	0
+熬	ao	90	0
+凹	ao	85	0
+
+八	ba	100	0
+把	ba	95	0
+爸	ba	90	0
+吧	ba	85	0
+巴	ba	80	0
+坝	ba	75	0
+霸	ba	70	0
+罢	ba	65	0
+
+白	bai	100	0
+百	bai	95	0
+败	bai	90	0
+拜	bai	85	0
+摆	bai	80	0
+伯	bai	75	0
+
+办	ban	100	0
+班	ban	95	0
+般	ban	90	0
+版	ban	85	0
+半	ban	80	0
+扮	ban	75	0
+瓣	ban	70	0
+板	ban	65	0
+
+帮	bang	100	0
+邦	bang	95	0
+榜	bang	90	0
+棒	bang	85	0
+棒	bang	80	0
+绑	bang	75	0
+
+包	bao	100	0
+报	bao	95	0
+保	bao	90	0
+宝	bao	85	0
+抱	bao	80	0
+鲍	bao	75	0
+薄	bao	70	0
+
+北	bei	100	0
+被	bei	95	0
+背	bei	90	0
+杯	bei	85	0
+备	bei	80	0
+倍	bei	75	0
+贝	bei	70	0
+
+本	ben	100	0
+奔	ben	95	0
+笨	ben	90	0
+苯	ben	85	0
+
+比	bi	100	0
+必	bi	95	0
+笔	bi	90	0
+毕	bi	85	0
+币	bi	80	0
+闭	bi	75	0
+鼻	bi	70	0
+碧	bi	65	0
+
+变	bian	100	0
+便	bian	95	0
+边	bian	90	0
+编	bian	85	0
+遍	bian	80	0
+辩	bian	75	0
+辨	bian	70	0
+贬	bian	65	0
+
+表	biao	100	0
+标	biao	95	0
+彪	biao	90	0
+膘	biao	85	0
+
+别	bie	100	0
+憋	bie	95	0
+瘪	bie	90	0
+
+并	bing	100	0
+病	bing	95	0
+兵	bing	90	0
+冰	bing	85	0
+饼	bing	80	0
+
+不	bo	100	0
+波	bo	95	0
+博	bo	90	0
+播	bo	85	0
+薄	bo	80	0
+拨	bo	75	0
+伯	bo	70	0
+帛	bo	65	0
+
+不	bu	100	0
+布	bu	95	0
+步	bu	90	0
+部	bu	85	0
+补	bu	80	0
+不	bu	75	0
+捕	bu	70	0
+卜	bu	65	0
+
+擦	ca	100	0
+拆	ca	95	0
+猜	cai	100	0
+才	cai	95	0
+材	cai	90	0
+财	cai	85	0
+采	cai	80	0
+菜	cai	75	0
+彩	cai	70	0
+
+参	can	100	0
+残	can	95	0
+餐	can	90	0
+惨	can	85	0
+蚕	can	80	0
+惭	can	75	0
+
+藏	cang	100	0
+仓	cang	95	0
+苍	cang	90	0
+沧	cang	85	0
+
+草	cao	100	0
+操	cao	95	0
+曹	cao	90	0
+厕	cao	85	0
+
+策	ce	100	0
+测	ce	95	0
+侧	ce	90	0
+册	ce	85	0
+厕	ce	80	0
+
+层	ceng	100	0
+曾	ceng	95	0
+蹭	ceng	90	0
+
+查	cha	100	0
+茶	cha	95	0
+差	cha	90	0
+插	cha	85	0
+察	cha	80	0
+叉	cha	75	0
+碴	cha	70	0
+
+拆	chai	100	0
+柴	chai	95	0
+钗	chai	90	0
+
+产	chan	100	0
+缠	chan	95	0
+禅	chan	90	0
+颤	chan	85	0
+铲	chan	80	0
+蝉	chan	75	0
+
+长	chang	100	0
+常	chang	95	0
+场	chang	90	0
+唱	chang	85	0
+厂	chang	80	0
+昌	chang	75	0
+倡	chang	70	0
+偿	chang	65	0
+
+超	chao	100	0
+朝	chao	95	0
+潮	chao	90	0
+吵	chao	85	0
+抄	chao	80	0
+炒	chao	75	0
+绰	chao	70	0
+
+车	che	100	0
+扯	che	95	0
+彻	che	90	0
+撤	che	85	0
+
+陈	chen	100	0
+晨	chen	95	0
+沉	chen	90	0
+尘	chen	85	0
+衬	chen	80	0
+趁	chen	75	0
+
+成	cheng	100	0
+城	cheng	95	0
+程	cheng	90	0
+称	cheng	85	0
+承	cheng	80	0
+呈	cheng	75	0
+诚	cheng	70	0
+承	cheng	65	0
+
+吃	chi	100	0
+持	chi	95	0
+迟	chi	90	0
+池	chi	85	0
+尺	chi	80	0
+赤	chi	75	0
+齿	chi	70	0
+斥	chi	65	0
+
+冲	chong	100	0
+虫	chong	95	0
+重	chong	90	0
+充	chong	85	0
+冲	chong	80	0
+崇	chong	75	0
+
+抽	chou	100	0
+愁	chou	95	0
+丑	chou	90	0
+臭	chou	85	0
+仇	chou	80	0
+绸	chou	75	0
+
+处	chu	100	0
+出	chu	95	0
+初	chu	90	0
+除	chu	85	0
+处	chu	80	0
+楚	chu	75	0
+储	chu	70	0
+
+传	chuan	100	0
+穿	chuan	95	0
+船	chuan	90	0
+川	chuan	85	0
+串	chuan	80	0
+
+创	chuang	100	0
+床	chuang	95	0
+窗	chuang	90	0
+闯	chuang	85	0
+疮	chuang	80	0
+
+吹	chui	100	0
+垂	chui	95	0
+炊	chui	90	0
+椎	chui	85	0
+
+春	chun	100	0
+纯	chun	95	0
+唇	chun	90	0
+春	chun	85	0
+淳	chun	80	0
+蠢	chun	75	0
+
+次	ci	100	0
+此	ci	95	0
+词	ci	90	0
+辞	ci	85	0
+刺	ci	80	0
+赐	ci	75	0
+
+从	cong	100	0
+聪	cong	95	0
+丛	cong	90	0
+匆	cong	85	0
+从	cong	80	0
+
+粗	cu	100	0
+促	cu	95	0
+醋	cu	90	0
+簇	cu	85	0
+
+窜	cuan	100	0
+攒	cuan	95	0
+篡	cuan	90	0
+
+催	cui	100	0
+脆	cui	95	0
+翠	cui	90	0
+崔	cui	85	0
+摧	cui	80	0
+
+村	cun	100	0
+存	cun	95	0
+寸	cun	90	0
+蹲	cun	85	0
+
+错	cuo	100	0
+措	cuo	95	0
+搓	cuo	90	0
+挫	cuo	85	0
+锉	cuo	80	0
+
+答	da	100	0
+达	da	95	0
+打	da	90	0
+大	da	85	0
+搭	da	80	0
+沓	da	75	0
+
+带	dai	100	0
+待	dai	95	0
+代	dai	90	0
+袋	dai	85	0
+贷	dai	80	0
+戴	dai	75	0
+怠	dai	70	0
+
+但	dan	100	0
+单	dan	95	0
+淡	dan	90	0
+蛋	dan	85	0
+担	dan	80	0
+旦	dan	75	0
+胆	dan	70	0
+
+当	dang	100	0
+党	dang	95	0
+档	dang	90	0
+挡	dang	85	0
+荡	dang	80	0
+
+到	dao	100	0
+道	dao	95	0
+倒	dao	90	0
+导	dao	85	0
+刀	dao	80	0
+岛	dao	75	0
+稻	dao	70	0
+
+的	de	100	0
+得	de	95	0
+德	de	90	0
+地	de	85	0
+
+等	deng	100	0
+灯	deng	95	0
+登	deng	90	0
+邓	deng	85	0
+凳	deng	80	0
+
+的	di	100	0
+第	di	95	0
+低	di	90	0
+底	di	85	0
+地	di	80	0
+敌	di	75	0
+弟	di	70	0
+
+电	dian	100	0
+店	dian	95	0
+典	dian	90	0
+垫	dian	85	0
+点	dian	80	0
+殿	dian	75	0
+淀	dian	70	0
+
+掉	diao	100	0
+调	diao	95	0
+吊	diao	90	0
+雕	diao	85	0
+钓	diao	80	0
+
+跌	die	100	0
+爹	die	95	0
+碟	die	90	0
+蝶	die	85	0
+谍	die	80	0
+
+定	ding	100	0
+顶	ding	95	0
+订	ding	90	0
+钉	ding	85	0
+定	ding	80	0
+盯	ding	75	0
+
+动	dong	100	0
+东	dong	95	0
+冬	dong	90	0
+懂	dong	85	0
+冻	dong	80	0
+栋	dong	75	0
+
+都	dou	100	0
+斗	dou	95	0
+读	dou	90	0
+豆	dou	85	0
+抖	dou	80	0
+陡	dou	75	0
+
+读	du	100	0
+度	du	95	0
+都	du	90	0
+毒	du	85	0
+独	du	80	0
+肚	du	75	0
+赌	du	70	0
+
+段	duan	100	0
+短	duan	95	0
+断	duan	90	0
+端	duan	85	0
+锻	duan	80	0
+
+对	dui	100	0
+队	dui	95	0
+堆	dui	90	0
+兑	dui	85	0
+敦	dui	80	0
+
+顿	dun	100	0
+吨	dun	95	0
+盾	dun	90	0
+蹲	dun	85	0
+炖	dun	80	0
+
+多	duo	100	0
+夺	duo	95	0
+朵	duo	90	0
+躲	duo	85	0
+duo	duo	80	0
+duo	duo	75	0
+
+额	e	100	0
+恶	e	95	0
+饿	e	90	0
+俄	e	85	0
+鹅	e	80	0
+遏	e	75	0
+
+恩	en	100	0
+摁	en	95	0
+
+而	er	100	0
+二	er	95	0
+儿	er	90	0
+耳	er	85	0
+尔	er	80	0
+饵	er	75	0
+
+发	fa	100	0
+法	fa	95	0
+罚	fa	90	0
+乏	fa	85	0
+阀	fa	80	0
+筏	fa	75	0
+
+反	fan	100	0
+饭	fan	95	0
+犯	fan	90	0
+范	fan	85	0
+翻	fan	80	0
+凡	fan	75	0
+烦	fan	70	0
+
+方	fang	100	0
+放	fang	95	0
+房	fang	90	0
+访	fang	85	0
+防	fang	80	0
+芳	fang	75	0
+坊	fang	70	0
+
+非	fei	100	0
+飞	fei	95	0
+费	fei	90	0
+肥	fei	85	0
+废	fei	80	0
+沸	fei	75	0
+肺	fei	70	0
+
+分	fen	100	0
+份	fen	95	0
+粉	fen	90	0
+奋	fen	85	0
+纷	fen	80	0
+氛	fen	75	0
+愤	fen	70	0
+
+风	feng	100	0
+封	feng	95	0
+丰	feng	90	0
+峰	feng	85	0
+锋	feng	80	0
+疯	feng	75	0
+冯	feng	70	0
+
+佛	fo	100	0
+否	fou	100	0
+
+父	fu	100	0
+付	fu	95	0
+服	fu	90	0
+府	fu	85	0
+负	fu	80	0
+复	fu	75	0
+福	fu	70	0
+富	fu	65	0
+附	fu	60	0
+
+嘎	ga	100	0
+噶	ga	95	0
+
+该	gai	100	0
+改	gai	95	0
+盖	gai	90	0
+概	gai	85	0
+钙	gai	80	0
+丐	gai	75	0
+
+干	gan	100	0
+感	gan	95	0
+敢	gan	90	0
+甘	gan	85	0
+肝	gan	80	0
+赶	gan	75	0
+杆	gan	70	0
+
+刚	gang	100	0
+钢	gang	95	0
+港	gang	90	0
+岗	gang	85	0
+纲	gang	80	0
+gang	gang	75	0
+
+高	gao	100	0
+告	gao	95	0
+搞	gao	90	0
+稿	gao	85	0
+糕	gao	80	0
+膏	gao	75	0
+
+各	ge	100	0
+个	ge	95	0
+歌	ge	90	0
+格	ge	85	0
+哥	ge	80	0
+革	ge	75	0
+葛	ge	70	0
+
+给	gei	100	0
+
+跟	gen	100	0
+根	gen	95	0
+更	gen	90	0
+耕	geng	100	0
+更	geng	95	0
+梗	geng	90	0
+geng	geng	85	0
+
+工	gong	100	0
+公	gong	95	0
+共	gong	90	0
+功	gong	85	0
+供	gong	80	0
+攻	gong	75	0
+宫	gong	70	0
+
+够	gou	100	0
+狗	gou	95	0
+购	gou	90	0
+构	gou	85	0
+钩	gou	80	0
+垢	gou	75	0
+
+古	gu	100	0
+故	gu	95	0
+顾	gu	90	0
+骨	gu	85	0
+谷	gu	80	0
+姑	gu	75	0
+估	gu	70	0
+
+挂	gua	100	0
+瓜	gua	95	0
+刮	gua	90	0
+寡	gua	85	0
+卦	gua	80	0
+
+怪	guai	100	0
+乖	guai	95	0
+拐	guai	90	0
+掴	guai	85	0
+
+关	guan	100	0
+观	guan	95	0
+管	guan	90	0
+官	guan	85	0
+馆	guan	80	0
+关	guan	75	0
+冠	guan	70	0
+
+光	guang	100	0
+广	guang	95	0
+逛	guang	90	0
+犷	guang	85	0
+
+贵	gui	100	0
+规	gui	95	0
+鬼	gui	90	0
+归	gui	85	0
+轨	gui	80	0
+柜	gui	75	0
+桂	gui	70	0
+
+滚	gun	100	0
+棍	gun	95	0
+辊	gun	90	0
+gu	gun	85	0
+
+过	guo	100	0
+国	guo	95	0
+果	guo	90	0
+锅	guo	85	0
+郭	guo	80	0
+裹	guo	75	0
+
+哈	ha	100	0
+蛤	ha	95	0
+
+还	hai	100	0
+海	hai	95	0
+害	hai	90	0
+孩	hai	85	0
+骸	hai	80	0
+
+汉	han	100	0
+汗	han	95	0
+寒	han	90	0
+喊	han	85	0
+韩	han	80	0
+含	han	75	0
+函	han	70	0
+
+行	hang	100	0
+航	hang	95	0
+杭	hang	90	0
+巷	hang	85	0
+航	hang	80	0
+
+好	hao	100	0
+号	hao	95	0
+毫	hao	90	0
+豪	hao	85	0
+浩	hao	80	0
+皓	hao	75	0
+
+和	he	100	0
+合	he	95	0
+河	he	90	0
+何	he	85	0
+核	he	80	0
+喝	he	75	0
+荷	he	70	0
+
+黑	hei	100	0
+嘿	hei	95	0
+
+很	hen	100	0
+恨	hen	95	0
+狠	hen	90	0
+hen	hen	85	0
+
+横	heng	100	0
+恒	heng	95	0
+衡	heng	90	0
+哼	heng	85	0
+
+红	hong	100	0
+洪	hong	95	0
+宏	hong	90	0
+虹	hong	85	0
+鸿	hong	80	0
+红	hong	75	0
+
+后	hou	100	0
+候	hou	95	0
+厚	hou	90	0
+侯	hou	85	0
+喉	hou	80	0
+
+户	hu	100	0
+湖	hu	95	0
+呼	hu	90	0
+虎	hu	85	0
+护	hu	80	0
+互	hu	75	0
+胡	hu	70	0
+
+化	hua	100	0
+话	hua	95	0
+花	hua	90	0
+画	hua	85	0
+华	hua	80	0
+划	hua	75	0
+
+坏	huai	100	0
+怀	huai	95	0
+淮	huai	90	0
+huai	huai	85	0
+
+换	huan	100	0
+还	huan	95	0
+环	huan	90	0
+欢	huan	85	0
+缓	huan	80	0
+ 환	huan	75	0
+
+黄	huang	100	0
+皇	huang	95	0
+荒	huang	90	0
+慌	huang	85	0
+黄	huang	80	0
+谎	huang	75	0
+
+灰	hui	100	0
+回	hui	95	0
+会	hui	90	0
+汇	hui	85	0
+辉	hui	80	0
+毁	hui	75	0
+
+婚	hun	100	0
+混	hun	95	0
+魂	hun	90	0
+浑	hun	85	0
+婚	hun	80	0
+
+活	huo	100	0
+或	huo	95	0
+火	huo	90	0
+货	huo	85	0
+获	huo	80	0
+祸	huo	75	0
+惑	huo	70	0
+
+机	ji	100	0
+己	ji	95	0
+记	ji	90	0
+级	ji	85	0
+计	ji	80	0
+几	ji	75	0
+即	ji	70	0
+极	ji	65	0
+急	ji	60	0
+济	ji	55	0
+
+家	jia	100	0
+加	jia	95	0
+价	jia	90	0
+假	jia	85	0
+架	jia	80	0
+夹	jia	75	0
+嫁	jia	70	0
+
+见	jian	100	0
+间	jian	95	0
+建	jian	90	0
+件	jian	85	0
+简	jian	80	0
+减	jian	75	0
+碱	jian	70	0
+
+将	jiang	100	0
+江	jiang	95	0
+讲	jiang	90	0
+奖	jiang	85	0
+jiang	jiang	80	0
+酱	jiang	75	0
+疆	jiang	70	0
+
+教	jiao	100	0
+交	jiao	95	0
+叫	jiao	90	0
+脚	jiao	85	0
+角	jiao	80	0
+较	jiao	75	0
+jiao	jiao	70	0
+
+接	jie	100	0
+街	jie	95	0
+结	jie	90	0
+节	jie	85	0
+杰	jie	80	0
+姐	jie	75	0
+解	jie	70	0
+
+今	jin	100	0
+金	jin	95	0
+进	jin	90	0
+近	jin	85	0
+仅	jin	80	0
+紧	jin	75	0
+津	jin	70	0
+
+经	jing	100	0
+京	jing	95	0
+精	jing	90	0
+晶	jing	85	0
+睛	jing	80	0
+景	jing	75	0
+静	jing	70	0
+
+就	jiu	100	0
+九	jiu	95	0
+酒	jiu	90	0
+久	jiu	85	0
+旧	jiu	80	0
+救	jiu	75	0
+就	jiu	70	0
+
+局	ju	100	0
+居	ju	95	0
+举	ju	90	0
+巨	ju	85	0
+聚	ju	80	0
+据	ju	75	0
+具	ju	70	0
+
+卷	juan	100	0
+捐	juan	95	0
+卷	juan	90	0
+ju	ju	85	0
+ju	ju	80	0
+眷	juan	75	0
+
+觉	jue	100	0
+决	jue	95	0
+绝	jue	90	0
+角	jue	85	0
+jue	jue	80	0
+爵	jue	75	0
+
+军	jun	100	0
+君	jun	95	0
+均	jun	90	0
+俊	jun	85	0
+菌	jjun	80	0
+钧	jun	75	0
+
+卡	ka	100	0
+咖	ka	95	0
+咔	ka	90	0
+
+开	kai	100	0
+凯	kai	95	0
+楷	kai	90	0
+kai	kai	85	0
+慨	kai	80	0
+
+看	kan	100	0
+砍	kan	95	0
+坎	kan	90	0
+刊	kan	85	0
+勘	kan	80	0
+
+抗	kang	100	0
+康	kang	95	0
+抗	kang	90	0
+亢	kang	85	0
+慷	kang	80	0
+
+考	kao	100	0
+靠	kao	95	0
+烤	kao	90	0
+考	kao	85	0
+拷	kao	80	0
+
+科	ke	100	0
+可	ke	95	0
+客	ke	90	0
+克	ke	85	0
+课	ke	80	0
+科	ke	75	0
+颗	ke	70	0
+
+肯	ken	100	0
+恳	ken	95	0
+啃	ken	90	0
+
+坑	keng	100	0
+吭	keng	95	0
+
+空	kong	100	0
+控	kong	95	0
+孔	kong	90	0
+空	kong	85	0
+恐	kong	80	0
+
+口	kou	100	0
+扣	kou	95	0
+口	kou	90	0
+寇	kou	85	0
+抠	kou	80	0
+
+苦	ku	100	0
+库	ku	95	0
+哭	ku	90	0
+酷	ku	85	0
+裤	ku	80	0
+苦	ku	75	0
+
+跨	kua	100	0
+夸	kua	95	0
+垮	kua	90	0
+跨	kua	85	0
+挎	kua	80	0
+
+快	kuai	100	0
+块	kuai	95	0
+会	kuai	90	0
+筷	kuai	85	0
+脍	kuai	80	0
+
+宽	kuan	100	0
+款	kuan	95	0
+宽	kuan	90	0
+髋	kuan	85	0
+
+况	kuang	100	0
+矿	kuang	95	0
+狂	kuang	90	0
+框	kuang	85	0
+筐	kuang	80	0
+
+困	kun	100	0
+昆	kun	95	0
+坤	kun	90	0
+困	kun	85	0
+裈	kun	80	0
+
+扩	kuo	100	0
+阔	kuo	95	0
+括	kuo	90	0
+扩	kuo	85	0
+廓	kuo	80	0
+
+拉	la	100	0
+啦	la	95	0
+辣	la	90	0
+腊	la	85	0
+拉	la	80	0
+喇	la	75	0
+
+来	lai	100	0
+赖	lai	95	0
+莱	lai	90	0
+lai	lai	85	0
+癞	lai	80	0
+
+蓝	lan	100	0
+兰	lan	95	0
+蓝	lan	90	0
+烂	lan	85	0
+懒	lan	80	0
+拦	lan	75	0
+缆	lan	70	0
+
+浪	lang	100	0
+狼	lang	95	0
+郎	lang	90	0
+朗	lang	85	0
+浪	lang	80	0
+郎	lang	75	0
+
+老	lao	100	0
+劳	lao	95	0
+牢	lao	90	0
+老	lao	85	0
+姥	lao	80	0
+涝	lao	75	0
+
+了	le	100	0
+乐	le	95	0
+勒	le	90	0
+lei	lei	85	0
+雷	lei	100	0
+累	lei	95	0
+泪	lei	90	0
+雷	lei	85	0
+磊	lei	80	0
+蕾	lei	75	0
+
+冷	leng	100	0
+楞	leng	95	0
+leng	leng	90	0
+
+里	li	100	0
+力	li	95	0
+理	li	90	0
+利	li	85	0
+立	li	80	0
+离	li	75	0
+李	li	70	0
+里	li	65	0
+
+连	lian	100	0
+联	lian	95	0
+脸	lian	90	0
+练	lian	85	0
+连	lian	80	0
+莲	lian	75	0
+恋	lian	70	0
+
+两	liang	100	0
+亮	liang	95	0
+良	liang	90	0
+量	liang	85	0
+凉	liang	80	0
+liang	liang	75	0
+
+了	liao	100	0
+料	liao	95	0
+聊	liao	90	0
+辽	liao	85	0
+疗	liao	80	0
+廖	liao	75	0
+
+列	lie	100	0
+烈	lie	95	0
+裂	lie	90	0
+猎	lie	85	0
+列	lie	80	0
+劣	lie	75	0
+
+林	lin	100	0
+临	lin	95	0
+邻	lin	90	0
+淋	lin	85	0
+lin	lin	80	0
+凛	lin	75	0
+
+令	ling	100	0
+领	ling	95	0
+零	ling	90	0
+灵	ling	85	0
+另	ling	80	0
+岭	ling	75	0
+玲	ling	70	0
+
+流	liu	100	0
+六	liu	95	0
+留	liu	90	0
+刘	liu	85	0
+流	liu	80	0
+liu	liu	75	0
+瘤	liu	70	0
+
+龙	long	100	0
+隆	long	95	0
+long	long	90	0
+笼	long	85	0
+拢	long	80	0
+陇	long	75	0
+
+楼	lou	100	0
+漏	lou	95	0
+露	lou	90	0
+搂	lou	85	0
+楼	lou	80	0
+陋	lou	75	0
+
+路	lu	100	0
+录	lu	95	0
+陆	lu	90	0
+露	lu	85	0
+卢	lu	80	0
+鲁	lu	75	0
+鹿	lu	70	0
+
+乱	luan	100	0
+卵	luan	95	0
+卵	luan	90	0
+lu	luan	85	0
+
+略	lue	100	0
+掠	lue	95	0
+lve	lve	90	0
+
+论	lun	100	0
+轮	lun	95	0
+伦	lun	90	0
+论	lun	85	0
+沦	lun	80	0
+
+落	luo	100	0
+罗	luo	95	0
+洛	luo	90	0
+络	luo	85	0
+骆	luo	80	0
+逻	luo	75	0
+
+律	lv	100	0
+绿	lv	95	0
+率	lv	90	0
+旅	lv	85	0
+虑	lv	80	0
+绿	lv	75	0
+缕	lv	70	0
+
+马	ma	100	0
+吗	ma	95	0
+妈	ma	90	0
+麻	ma	85	0
+骂	ma	80	0
+码	ma	75	0
+抹	ma	70	0
+
+买	mai	100	0
+卖	mai	95	0
+麦	mai	90	0
+迈	mai	85	0
+mai	mai	80	0
+脉	mai	75	0
+
+满	man	100	0
+慢	man	95	0
+曼	man	90	0
+漫	man	85	0
+满	man	80	0
+埋	man	75	0
+
+忙	mang	100	0
+芒	mang	95	0
+盲	mang	90	0
+茫	mang	85	0
+忙	mang	80	0
+莽	mang	75	0
+
+毛	mao	100	0
+猫	mao	95	0
+矛	mao	90	0
+茅	mao	85	0
+茂	mao	80	0
+冒	mao	75	0
+贸	mao	70	0
+
+么	me	100	0
+
+没	mei	100	0
+美	mei	95	0
+妹	mei	90	0
+每	mei	85	0
+梅	mei	80	0
+mei	mei	75	0
+媒	mei	70	0
+
+门	men	100	0
+们	men	95	0
+闷	men	90	0
+men	men	85	0
+焖	men	80	0
+
+梦	meng	100	0
+猛	meng	95	0
+蒙	meng	90	0
+盟	meng	85	0
+梦	meng	80	0
+懵	meng	75	0
+
+米	mi	100	0
+密	mi	95	0
+迷	mi	90	0
+秘	mi	85	0
+蜜	mi	80	0
+mi	mi	75	0
+觅	mi	70	0
+
+面	mian	100	0
+棉	mian	95	0
+眠	mian	90	0
+绵	mian	85	0
+免	mian	80	0
+缅	mian	75	0
+
+秒	miao	100	0
+苗	miao	95	0
+描	miao	90	0
+秒	miao	85	0
+妙	miao	80	0
+庙	miao	75	0
+
+灭	mie	100	0
+蔑	mie	95	0
+篾	mie	90	0
+
+民	min	100	0
+敏	min	95	0
+闽	min	90	0
+皿	min	85	0
+抿	min	80	0
+悯	min	75	0
+
+明	ming	100	0
+名	ming	95	0
+命	ming	90	0
+鸣	ming	85	0
+明	ming	80	0
+铭	ming	75	0
+
+谬	miu	100	0
+
+莫	mo	100	0
+模	mo	95	0
+磨	mo	90	0
+末	mo	85	0
+莫	mo	80	0
+墨	mo	75	0
+默	mo	70	0
+
+某	mou	100	0
+谋	mou	95	0
+牟	mou	90	0
+眸	mou	85	0
+
+母	mu	100	0
+木	mu	95	0
+目	mu	90	0
+幕	mu	85	0
+母	mu	80	0
+墓	mu	75	0
+慕	mu	70	0
+
+那	na	100	0
+拿	na	95	0
+哪	na	90	0
+纳	na	85	0
+娜	na	80	0
+那	na	75	0
+纳	na	70	0
+
+奶	nai	100	0
+耐	nai	95	0
+乃	nai	90	0
+奈	nai	85	0
+nai	nai	80	0
+
+南	nan	100	0
+难	nan	95	0
+男	nan	90	0
+nan	nan	85	0
+楠	nan	80	0
+
+囊	nang	100	0
+馕	nang	95	0
+
+脑	nao	100	0
+闹	nao	95	0
+恼	nao	90	0
+脑	nao	85	0
+淖	nao	80	0
+
+呢	ne	100	0
+
+内	nei	100	0
+馁	nei	95	0
+
+嫩	nen	100	0
+
+能	neng	100	0
+能	neng	95	0
+
+你	ni	100	0
+尼	ni	95	0
+泥	ni	90	0
+逆	ni	85	0
+倪	ni	80	0
+昵	ni	75	0
+
+年	nian	100	0
+念	nian	95	0
+nian	nian	90	0
+粘	ni	85	0
+nian	ni	80	0
+碾	ni	75	0
+
+娘	niang	100	0
+酿	niang	95	0
+
+鸟	niao	100	0
+尿	niao	95	0
+袅	niao	90	0
+
+捏	nie	100	0
+聂	nie	95	0
+nie	nie	90	0
+镊	nie	85	0
+
+您	nin	100	0
+
+宁	ning	100	0
+凝	ning	95	0
+柠	ning	90	0
+ning	ning	85	0
+泞	ning	80	0
+
+牛	niu	100	0
+扭	niu	95	0
+纽	niu	90	0
+niu	niu	85	0
+拗	niu	80	0
+
+农	nong	100	0
+浓	nong	95	0
+弄	nong	90	0
+nong	nong	85	0
+脓	nong	80	0
+
+女	nv	100	0
+努	nv	95	0
+怒	nv	90	0
+女	nv	85	0
+衲	nv	80	0
+
+暖	nuan	100	0
+nuan	nuan	95	0
+
+虐	nue	100	0
+疟	nue	95	0
+谑	nue	90	0
+
+诺	nuo	100	0
+挪	nuo	95	0
+懦	nuo	90	0
+诺	nuo	85	0
+糯	nuo	80	0
+
+哦	o	100	0
+噢	o	95	0
+
+欧	ou	100	0
+偶	ou	95	0
+呕	ou	90	0
+欧	ou	85	0
+耦	ou	80	0
+
+怕	pa	100	0
+爬	pa	95	0
+帕	pa	90	0
+趴	pa	85	0
+啪	pa	80	0
+
+排	pai	100	0
+拍	pai	95	0
+牌	pai	90	0
+派	pai	85	0
+pai	pai	80	0
+湃	pai	75	0
+
+判	pan	100	0
+盘	pan	95	0
+盼	pan	90	0
+攀	pan	85	0
+叛	pan	80	0
+潘	pan	75	0
+
+旁	pang	100	0
+胖	pang	95	0
+庞	pang	90	0
+傍	pang	85	0
+磅	pang	80	0
+
+跑	pao	100	0
+炮	pao	95	0
+泡	pao	90	0
+抛	pao	85	0
+pao	pao	80	0
+袍	pao	75	0
+
+配	pei	100	0
+培	pei	95	0
+赔	pei	90	0
+陪	pei	85	0
+配	pei	80	0
+沛	pei	75	0
+
+盆	pen	100	0
+喷	pen	95	0
+
+朋	peng	100	0
+鹏	peng	95	0
+碰	peng	90	0
+朋	peng	85	0
+彭	peng	80	0
+
+批	pi	100	0
+皮	pi	95	0
+披	pi	90	0
+匹	pi	85	0
+屁	pi	80	0
+疲	pi	75	0
+毗	pi	70	0
+
+片	pian	100	0
+篇	pian	95	0
+偏	pian	90	0
+骗	pian	85	0
+片	pian	80	0
+骈	pian	75	0
+
+票	piao	100	0
+漂	piao	95	0
+飘	piao	90	0
+票	piao	85	0
+朴	piao	80	0
+
+撇	pie	100	0
+瞥	pie	95	0
+撇	pie	90	0
+
+品	pin	100	0
+拼	pin	95	0
+贫	pin	90	0
+频	pin	85	0
+品	pin	80	0
+聘	pin	75	0
+
+平	ping	100	0
+评	ping	95	0
+瓶	ping	90	0
+平	ping	85	0
+凭	ping	80	0
+坪	ping	75	0
+
+破	po	100	0
+迫	po	95	0
+坡	po	90	0
+泼	po	85	0
+破	po	80	0
+颇	po	75	0
+
+铺	pu	100	0
+普	pu	95	0
+扑	pu	90	0
+葡	pu	85	0
+铺	pu	80	0
+蒲	pu	75	0
+
+期	qi	100	0
+其	qi	95	0
+起	qi	90	0
+七	qi	85	0
+气	qi	80	0
+齐	qi	75	0
+旗	qi	70	0
+
+恰	qia	100	0
+洽	qia	95	0
+掐	qia	90	0
+
+前	qian	100	0
+钱	qian	95	0
+千	qian	90	0
+签	qian	85	0
+前	qian	80	0
+浅	qian	75	0
+遣	qian	70	0
+
+强	qiang	100	0
+墙	qiang	95	0
+抢	qiang	90	0
+强	qiang	85	0
+qiang	qiang	80	0
+枪	qiang	75	0
+
+桥	qiao	100	0
+巧	qiao	95	0
+敲	qiao	90	0
+桥	qiao	85	0
+qiao	qiao	80	0
+撬	qiao	75	0
+
+且	qie	100	0
+切	qie	95	0
+茄	qie	90	0
+窃	qie	85	0
+qie	qie	80	0
+怯	qie	75	0
+
+亲	qin	100	0
+琴	qin	95	0
+勤	qin	90	0
+秦	qin	85	0
+侵	qin	80	0
+亲	qin	75	0
+寝	qin	70	0
+
+请	qing	100	0
+清	qing	95	0
+情	qing	90	0
+青	qing	85	0
+请	qing	80	0
+轻	qing	75	0
+氢	qing	70	0
+
+穷	qiong	100	0
+琼	qiong	95	0
+穷	qiong	90	0
+穹	qiong	85	0
+
+求	qiu	100	0
+球	qiu	95	0
+秋	qiu	90	0
+求	qiu	85	0
+qiu	qiu	80	0
+囚	qiu	75	0
+
+区	qu	100	0
+取	qu	95	0
+曲	qu	90	0
+去	qu	85	0
+趣	qu	80	0
+渠	qu	75	0
+屈	qu	70	0
+
+全	quan	100	0
+权	quan	95	0
+泉	quan	90	0
+全	quan	85	0
+圈	quan	80	0
+拳	quan	75	0
+劝	quan	70	0
+
+却	que	100	0
+确	que	95	0
+缺	que	90	0
+雀	que	85	0
+瘸	que	80	0
+却	que	75	0
+
+群	qun	100	0
+裙	qun	95	0
+群	qun	90	0
+qun	qun	85	0
+
+然	ran	100	0
+燃	ran	95	0
+然	ran	90	0
+染	ran	85	0
+冉	ran	80	0
+
+让	rang	100	0
+嚷	rang	95	0
+让	rang	90	0
+壤	rang	85	0
+攘	rang	80	0
+
+绕	rao	100	0
+饶	rao	95	0
+扰	rao	90	0
+绕	rao	85	0
+
+热	re	100	0
+惹	re	95	0
+热	re	90	0
+
+人	ren	100	0
+认	ren	95	0
+任	ren	90	0
+人	ren	85	0
+仁	ren	80	0
+忍	ren	75	0
+刃	ren	70	0
+
+日	ri	100	0
+日	ri	95	0
+
+仍	reng	100	0
+扔	reng	95	0
+
+容	rong	100	0
+荣	rong	95	0
+融	rong	90	0
+容	rong	85	0
+绒	rong	80	0
+溶	rong	75	0
+
+肉	rou	100	0
+柔	rou	95	0
+揉	rou	90	0
+肉	rou	85	0
+揉	rou	80	0
+
+如	ru	100	0
+入	ru	95	0
+如	ru	90	0
+儒	ru	85	0
+乳	ru	80	0
+汝	ru	75	0
+
+软	ruan	100	0
+阮	ruan	95	0
+软	ruan	90	0
+
+瑞	rui	100	0
+锐	rui	95	0
+瑞	rui	90	0
+睿	rui	85	0
+
+润	run	100	0
+闰	run	95	0
+
+若	ruo	100	0
+弱	ruo	95	0
+若	ruo	90	0
+
+撒	sa	100	0
+洒	sa	95	0
+萨	sa	90	0
+撒	sa	85	0
+
+塞	sai	100	0
+赛	sai	95	0
+腮	sai	90	0
+塞	sai	85	0
+sai	sai	80	0
+
+三	san	100	0
+散	san	95	0
+伞	san	90	0
+三	san	85	0
+散	san	80	0
+桑	sang	100	0
+嗓	sang	95	0
+丧	sang	90	0
+桑	sang	85	0
+
+扫	sao	100	0
+骚	sao	95	0
+嫂	sao	90	0
+扫	sao	85	0
+sao	sao	80	0
+
+色	se	100	0
+涩	se	95	0
+瑟	se	90	0
+色	se	85	0
+sen	sen	100	0
+
+森	sen	100	0
+僧	seng	100	0
+
+杀	sha	100	0
+沙	sha	95	0
+纱	sha	90	0
+杀	sha	85	0
+煞	sha	80	0
+砂	sha	75	0
+
+晒	shai	100	0
+筛	shai	95	0
+
+山	shan	100	0
+闪	shan	95	0
+善	shan	90	0
+山	shan	85	0
+衫	shan	80	0
+扇	shan	75	0
+
+上	shang	100	0
+商	shang	95	0
+伤	shang	90	0
+上	shang	85	0
+赏	shang	80	0
+尚	shang	75	0
+
+少	shao	100	0
+烧	shao	95	0
+绍	shao	90	0
+少	shao	85	0
+稍	shao	80	0
+邵	shao	75	0
+
+社	she	100	0
+设	she	95	0
+射	she	90	0
+社	she	85	0
+she	she	80	0
+折	she	75	0
+
+深	shen	100	0
+身	shen	95	0
+神	shen	90	0
+什	shen	85	0
+深	shen	80	0
+申	shen	75	0
+审	shen	70	0
+
+声	sheng	100	0
+生	sheng	95	0
+升	sheng	90	0
+声	sheng	85	0
+胜	sheng	80	0
+省	sheng	75	0
+盛	sheng	70	0
+
+时	shi	100	0
+是	shi	95	0
+时	shi	90	0
+事	shi	85	0
+十	shi	80	0
+实	shi	75	0
+市	shi	70	0
+
+手	shou	100	0
+受	shou	95	0
+首	shou	90	0
+收	shou	85	0
+手	shou	80	0
+守	shou	75	0
+寿	shou	70	0
+
+书	shu	100	0
+树	shu	95	0
+数	shu	90	0
+术	shu	85	0
+书	shu	80	0
+输	shu	75	0
+属	shu	70	0
+
+刷	shua	100	0
+耍	shua	95	0
+
+率	shuai	100	0
+帅	shuai	95	0
+摔	shuai	90	0
+率	shuai	85	0
+
+双	shuang	100	0
+爽	shuang	95	0
+双	shuang	90	0
+霜	shuang	85	0
+
+水	shui	100	0
+说	shui	95	0
+税	shui	90	0
+水	shui	85	0
+睡	shui	80	0
+税	shui	75	0
+
+顺	shun	100	0
+瞬	shun	95	0
+顺	shun	90	0
+shun	shun	85	0
+
+说	shuo	100	0
+硕	shuo	95	0
+朔	shuo	90	0
+说	shuo	85	0
+烁	shuo	80	0
+
+四	si	100	0
+思	si	95	0
+死	si	90	0
+四	si	85	0
+司	si	80	0
+私	si	75	0
+丝	si	70	0
+
+送	song	100	0
+松	song	95	0
+宋	song	90	0
+送	song	85	0
+颂	song	80	0
+song	song	75	0
+
+搜	sou	100	0
+艘	sou	95	0
+sou	sou	90	0
+
+素	su	100	0
+速	su	95	0
+苏	su	90	0
+诉	su	85	0
+素	su	80	0
+俗	su	75	0
+宿	su	70	0
+
+算	suan	100	0
+酸	suan	95	0
+蒜	suan	90	0
+算	suan	85	0
+suan	suan	80	0
+
+岁	sui	100	0
+随	sui	95	0
+碎	sui	90	0
+岁	sui	85	0
+sui	sui	80	0
+遂	sui	75	0
+
+孙	sun	100	0
+损	sun	95	0
+笋	sun	90	0
+sun	sun	85	0
+孙	sun	80	0
+
+所	suo	100	0
+索	suo	95	0
+锁	suo	90	0
+所	suo	85	0
+suo	suo	80	0
+缩	suo	75	0
+
+他	ta	100	0
+她	ta	95	0
+它	ta	90	0
+塔	ta	85	0
+他	ta	80	0
+踏	ta	75	0
+塌	ta	70	0
+
+太	tai	100	0
+台	tai	95	0
+态	tai	90	0
+太	tai	85	0
+tai	tai	80	0
+泰	tai	75	0
+
+谈	tan	100	0
+探	tan	95	0
+坦	tan	90	0
+谈	tan	85	0
+tan	tan	80	0
+叹	tan	75	0
+碳	tan	70	0
+
+堂	tang	100	0
+糖	tang	95	0
+唐	tang	90	0
+堂	tang	85	0
+tang	tang	80	0
+汤	tang	75	0
+糖	tang	70	0
+
+特	te	100	0
+
+疼	teng	100	0
+腾	teng	95	0
+疼	teng	90	0
+藤	teng	85	0
+teng	teng	80	0
+
+提	ti	100	0
+题	ti	95	0
+体	ti	90	0
+提	ti	85	0
+ti	ti	80	0
+踢	ti	75	0
+替	ti	70	0
+
+天	tian	100	0
+田	tian	95	0
+添	tian	90	0
+甜	tian	85	0
+天	tian	80	0
+填	tian	75	0
+tian	tian	70	0
+
+条	tiao	100	0
+调	tiao	95	0
+跳	tiao	90	0
+条	tiao	85	0
+挑	tiao	80	0
+眺	tiao	75	0
+
+铁	tie	100	0
+贴	tie	95	0
+铁	tie	90	0
+帖	tie	85	0
+贴	tie	80	0
+
+听	ting	100	0
+停	ting	95	0
+庭	ting	90	0
+听	ting	85	0
+ting	ting	80	0
+厅	ting	75	0
+
+同	tong	100	0
+通	tong	95	0
+统	tong	90	0
+痛	tong	85	0
+同	tong	80	0
+铜	tong	75	0
+桐	tong	70	0
+
+头	tou	100	0
+投	tou	95	0
+透	tou	90	0
+头	tou	85	0
+偷	tou	80	0
+偷	tou	75	0
+
+土	tu	100	0
+图	tu	95	0
+突	tu	90	0
+途	tu	85	0
+土	tu	80	0
+途	tu	75	0
+涂	tu	70	0
+
+团	tuan	100	0
+湍	tuan	95	0
+团	tuan	90	0
+tuan	tuan	85	0
+
+推	tui	100	0
+退	tui	95	0
+推	tui	90	0
+腿	tui	85	0
+退	tui	80	0
+蜕	tui	75	0
+
+吞	tun	100	0
+屯	tun	95	0
+囤	tun	90	0
+吞	tun	85	0
+tun	tun	80	0
+
+脱	tuo	100	0
+拖	tuo	95	0
+托	tuo	90	0
+脱	tuo	85	0
+tuo	tuo	80	0
+驼	tuo	75	0
+
+挖	wa	100	0
+哇	wa	95	0
+蛙	wa	90	0
+瓦	wa	85	0
+瓦	wa	80	0
+娃	wa	75	0
+
+外	wai	100	0
+歪	wai	95	0
+
+完	wan	100	0
+晚	wan	95	0
+万	wan	90	0
+玩	wan	85	0
+完	wan	80	0
+万	wan	75	0
+碗	wan	70	0
+
+王	wang	100	0
+网	wang	95	0
+往	wang	90	0
+忘	wang	85	0
+王	wang	80	0
+望	wang	75	0
+旺	wang	70	0
+
+为	wei	100	0
+未	wei	95	0
+围	wei	90	0
+位	wei	85	0
+为	wei	80	0
+委	wei	75	0
+卫	wei	70	0
+
+问	wen	100	0
+文	wen	95	0
+闻	wen	90	0
+温	wen	85	0
+问	wen	80	0
+wen	wen	75	0
+吻	wen	70	0
+
+我	wo	100	0
+握	wo	95	0
+卧	wo	90	0
+我	wo	85	0
+卧	wo	80	0
+沃	wo	75	0
+蜗	wo	70	0
+
+无	wu	100	0
+五	wu	95	0
+物	wu	90	0
+务	wu	85	0
+武	wu	80	0
+无	wu	75	0
+舞	wu	70	0
+
+系	xi	100	0
+西	xi	95	0
+息	xi	90	0
+希	xi	85	0
+席	xi	80	0
+系	xi	75	0
+细	xi	70	0
+
+夏	xia	100	0
+下	xia	95	0
+夏	xia	90	0
+吓	xia	85	0
+虾	xia	80	0
+xia	xia	75	0
+
+先	xian	100	0
+现	xian	95	0
+线	xian	90	0
+先	xian	85	0
+显	xian	80	0
+xian	xian	75	0
+县	xian	70	0
+
+想	xiang	100	0
+向	xiang	95	0
+相	xiang	90	0
+想	xiang	85	0
+乡	xiang	80	0
+香	xiang	75	0
+响	xiang	70	0
+
+小	xiao	100	0
+笑	xiao	95	0
+校	xiao	90	0
+小	xiao	85	0
+消	xiao	80	0
+效	xiao	75	0
+晓	xiao	70	0
+
+写	xie	100	0
+些	xie	95	0
+谢	xie	90	0
+写	xie	85	0
+xie	xie	80	0
+鞋	xie	75	0
+协	xie	70	0
+
+新	xin	100	0
+信	xin	95	0
+心	xin	90	0
+新	xin	85	0
+辛	xin	80	0
+芯	xin	75	0
+欣	xin	70	0
+
+行	xing	100	0
+星	xing	95	0
+性	xing	90	0
+形	xing	85	0
+姓	xing	80	0
+兴	xing	75	0
+醒	xing	70	0
+
+雄	xiong	100	0
+兄	xiong	95	0
+胸	xiong	90	0
+熊	xiong	85	0
+凶	xiong	80	0
+胸	xiong	75	0
+
+修	xiu	100	0
+休	xiu	95	0
+秀	xiu	90	0
+修	xiu	85	0
+xiu	xiu	80	0
+羞	xiu	75	0
+嗅	xiu	70	0
+
+需	xu	100	0
+须	xu	95	0
+续	xu	90	0
+需	xu	85	0
+许	xu	80	0
+xu	xu	75	0
+叙	xu	70	0
+
+选	xuan	100	0
+宣	xuan	95	0
+旋	xuan	90	0
+选	xuan	85	0
+xuan	xuan	80	0
+县	xuan	75	0
+悬	xuan	70	0
+
+学	xue	100	0
+血	xue	95	0
+雪	xue	90	0
+学	xue	85	0
+xue	xue	80	0
+穴	xue	75	0
+谑	xue	70	0
+
+寻	xun	100	0
+讯	xun	95	0
+训	xun	90	0
+寻	xun	85	0
+巡	xun	80	0
+迅	xun	75	0
+旬	xun	70	0
+
+压	ya	100	0
+牙	ya	95	0
+亚	ya	90	0
+压	ya	85	0
+呀	ya	80	0
+押	ya	75	0
+哑	ya	70	0
+
+言	yan	100	0
+眼	yan	95	0
+研	yan	90	0
+严	yan	85	0
+演	yan	80	0
+言	yan	75	0
+yan	yan	70	0
+
+样	yang	100	0
+阳	yang	95	0
+洋	yang	90	0
+样	yang	85	0
+扬	yang	80	0
+yang	yang	75	0
+氧	yang	70	0
+
+要	yao	100	0
+药	yao	95	0
+摇	yao	90	0
+要	yao	85	0
+腰	yao	80	0
+邀	yao	75	0
+姚	yao	70	0
+
+也	ye	100	0
+业	ye	95	0
+夜	ye	90	0
+叶	ye	85	0
+也	ye	80	0
+页	ye	75	0
+爷	ye	70	0
+
+一	yi	100	0
+意	yi	95	0
+以	yi	90	0
+义	yi	85	0
+已	yi	80	0
+一	yi	75	0
+yi	yi	70	0
+亿	yi	65	0
+
+因	yin	100	0
+引	yin	95	0
+音	yin	90	0
+银	yin	85	0
+因	yin	80	0
+印	yin	75	0
+阴	yin	70	0
+
+应	ying	100	0
+英	ying	95	0
+影	ying	90	0
+应	ying	85	0
+营	ying	80	0
+迎	ying	75	0
+鹰	ying	70	0
+
+用	yong	100	0
+永	yong	95	0
+勇	yong	90	0
+用	yong	85	0
+泳	yong	80	0
+涌	yong	75	0
+踊	yong	70	0
+
+有	you	100	0
+又	you	95	0
+由	you	90	0
+有	you	85	0
+友	you	80	0
+you	you	75	0
+右	you	70	0
+
+于	yu	100	0
+与	yu	95	0
+语	yu	90	0
+雨	yu	85	0
+于	yu	80	0
+玉	yu	75	0
+予	yu	70	0
+
+元	yuan	100	0
+原	yuan	95	0
+员	yuan	90	0
+元	yuan	85	0
+源	yuan	80	0
+园	yuan	75	0
+圆	yuan	70	0
+
+月	yue	100	0
+约	yue	95	0
+越	yue	90	0
+月	yue	85	0
+yue	yue	80	0
+跃	yue	75	0
+岳	yue	70	0
+
+运	yun	100	0
+云	yun	95	0
+孕	yun	90	0
+运	yun	85	0
+yun	yun	80	0
+允	yun	75	0
+晕	yun	70	0
+
+杂	za	100	0
+砸	za	95	0
+杂	za	90	0
+za	za	85	0
+
+在	zai	100	0
+再	zai	95	0
+载	zai	90	0
+在	zai	85	0
+灾	zai	80	0
+zai	zai	75	0
+
+咱	zan	100	0
+赞	zan	95	0
+暂	zan	90	0
+咱	zan	85	0
+zan	zan	80	0
+攒	zan	75	0
+
+脏	zang	100	0
+葬	zang	95	0
+藏	zang	90	0
+脏	zang	85	0
+zang	zang	80	0
+
+早	zao	100	0
+造	zao	95	0
+遭	zao	90	0
+早	zao	85	0
+zao	zao	80	0
+枣	zao	75	0
+澡	zao	70	0
+
+则	ze	100	0
+责	ze	95	0
+择	ze	90	0
+泽	ze	85	0
+ze	ze	80	0
+仄	ze	75	0
+
+贼	zei	100	0
+
+怎	zen	100	0
+怎么	zen me	100	0
+
+增	zeng	100	0
+曾	zeng	95	0
+增	zeng	90	0
+zeng	zeng	85	0
+赠	zeng	80	0
+
+扎	zha	100	0
+炸	zha	95	0
+扎	zha	90	0
+渣	zha	85	0
+zh	zh	80	0
+轧	zha	75	0
+
+宅	zhai	100	0
+窄	zhai	95	0
+债	zhai	90	0
+宅	zhai	85	0
+zhai	zhai	80	0
+
+战	zhan	100	0
+站	zhan	95	0
+占	zhan	90	0
+战	zhan	85	0
+展	zhan	80	0
+zh	zh	75	0
+颤	zhan	70	0
+
+张	zhang	100	0
+长	zhang	95	0
+张	zhang	90	0
+章	zhang	85	0
+掌	zhang	80	0
+涨	zhang	75	0
+zhang	zhang	70	0
+
+找	zhao	100	0
+照	zhao	95	0
+招	zhao	90	0
+找	zhao	85	0
+赵	zhao	80	0
+昭	zhao	75	0
+
+这	zhe	100	0
+着	zhe	95	0
+者	zhe	90	0
+这	zhe	85	0
+折	zhe	80	0
+zhe	zhe	75	0
+浙	zhe	70	0
+
+真	zhen	100	0
+镇	zhen	95	0
+针	zhen	90	0
+真	zhen	85	0
+振	zhen	80	0
+震	zhen	75	0
+zhen	zhen	70	0
+
+正	zheng	100	0
+政	zheng	95	0
+证	zheng	90	0
+正	zheng	85	0
+整	zheng	80	0
+争	zheng	75	0
+征	zheng	70	0
+
+之	zhi	100	0
+知	zhi	95	0
+制	zhi	90	0
+只	zhi	85	0
+之	zhi	80	0
+至	zhi	75	0
+直	zhi	70	0
+
+中	zhong	100	0
+种	zhong	95	0
+重	zhong	90	0
+中	zhong	85	0
+zhong	zhong	80	0
+众	zhong	75	0
+终	zhong	70	0
+
+周	zhou	100	0
+州	zhou	95	0
+洲	zhou	90	0
+周	zhou	85	0
+zhou	zhou	80	0
+粥	zhou	75	0
+
+主	zhu	100	0
+住	zhu	95	0
+注	zhu	90	0
+主	zhu	85	0
+助	zhu	80	0
+zhu	zhu	75	0
+著	zhu	70	0
+
+抓	zhua	100	0
+
+专	zhuan	100	0
+转	zhuan	95	0
+专	zhuan	90	0
+传	zhuan	85	0
+赚	zhuan	80	0
+zhu	zhuan	75	0
+
+装	zhuang	100	0
+状	zhuang	95	0
+庄	zhuang	90	0
+装	zhuang	85	0
+zhuang	zhuang	80	0
+妆	zhuang	75	0
+
+追	zhui	100	0
+坠	zhui	95	0
+追	zhui	90	0
+缀	zhui	85	0
+zhu	zhu	80	0
+
+准	zhun	100	0
+
+桌	zhuo	100	0
+捉	zhuo	95	0
+卓	zhuo	90	0
+桌	zhuo	85	0
+zhuo	zhuo	80	0
+灼	zhuo	75	0
+
+字	zi	100	0
+资	zi	95	0
+自	zi	90	0
+子	zi	85	0
+字	zi	80	0
+紫	zi	75	0
+仔	zi	70	0
+
+总	zong	100	0
+纵	zong	95	0
+宗	zong	90	0
+总	zong	85	0
+zong	zong	80	0
+综	zong	75	0
+
+走	zou	100	0
+奏	zou	95	0
+走	zou	90	0
+zou	zou	85	0
+
+组	zu	100	0
+足	zu	95	0
+族	zu	90	0
+组	zu	85	0
+zu	zu	80	0
+租	zu	75	0
+
+最	zui	100	0
+嘴	zui	95	0
+罪	zui	90	0
+最	zui	85	0
+zui	zui	80	0
+醉	zui	75	0
+
+尊	zun	100	0
+遵	zun	95	0
