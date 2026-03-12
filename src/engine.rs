@@ -26,6 +26,8 @@ pub struct InputState {
     pub context: String,
     /// Is the input method active
     pub is_active: bool,
+    /// Text to be committed (cleared after being read)
+    pub commit_text: String,
 }
 
 impl Default for InputState {
@@ -37,6 +39,7 @@ impl Default for InputState {
             current_page: 0,
             context: String::new(),
             is_active: false,
+            commit_text: String::new(),
         }
     }
 }
@@ -233,6 +236,7 @@ impl InputEngine {
         }
 
         // Always commit raw pinyin (English) on Enter
+        state.commit_text = state.preedit.clone();
         state.context.push_str(&state.preedit);
         state.preedit.clear();
         state.candidates.clear();
@@ -522,16 +526,19 @@ impl InputEngine {
     fn commit_candidate(&self, state: &mut InputState, candidate: &Candidate) {
         // Update dictionary frequency
         self.dictionary.update_frequency(&candidate.pinyin, &candidate.text);
-        
+
+        // Set commit text for C++ to retrieve
+        state.commit_text = candidate.text.clone();
+
         // Update context
         state.context.push_str(&candidate.text);
-        
+
         // Limit context length
         if state.context.len() > 100 {
             let drain = state.context.len() - 100;
             state.context.drain(0..drain);
         }
-        
+
         // Clear preedit
         state.preedit.clear();
         state.candidates.clear();
@@ -549,7 +556,19 @@ impl InputEngine {
         let state = self.get_state(ic);
         state.candidates.clone()
     }
-    
+
+    /// Get commit text and clear it (for C++ to retrieve and actually commit)
+    pub fn get_commit_text(&self, ic: *mut FcitxInputContext) -> String {
+        let mut state = self.get_state(ic);
+        let text = state.commit_text.clone();
+        // Clear commit text after retrieving
+        if !text.is_empty() {
+            state.commit_text.clear();
+            self.update_state(ic, state);
+        }
+        text
+    }
+
     /// Reset input state
     pub fn reset(&self, ic: *mut FcitxInputContext) {
         let state = InputState::default();

@@ -167,6 +167,35 @@ pub extern "C" fn ailater_engine_get_preedit(engine: *mut c_void, ic: *mut c_voi
     buffer.as_ref().map(|s| s.as_ptr()).unwrap_or(ptr::null())
 }
 
+/// Get commit text (text to be committed to the application)
+///
+/// Returns a pointer to a null-terminated C string.
+/// The pointer is valid until the next call to this function.
+/// Returns NULL if there is no commit text.
+///
+/// IMPORTANT: After retrieving the commit text, it will be cleared.
+#[no_mangle]
+pub extern "C" fn ailater_engine_get_commit_text(engine: *mut c_void, ic: *mut c_void) -> *const c_char {
+    if engine.is_null() {
+        return ptr::null();
+    }
+
+    let engine = unsafe { &*(engine as *const InputEngine) };
+    let ic = ic as *mut FcitxInputContext;
+
+    let commit_text = engine.get_commit_text(ic);
+
+    if commit_text.is_empty() {
+        return ptr::null();
+    }
+
+    // Store in static buffer
+    let mut buffer = get_preedit_buffer().lock();
+    *buffer = CString::new(commit_text).ok();
+
+    buffer.as_ref().map(|s| s.as_ptr()).unwrap_or(ptr::null())
+}
+
 /// Get candidates for current input
 ///
 /// Returns a pointer to an array of C string pointers.

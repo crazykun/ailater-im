@@ -27,6 +27,7 @@ extern "C" {
     int ailater_engine_handle_key(void* engine, void* ic, uint32_t keysym, uint32_t keycode, uint32_t state, bool is_release);
     void ailater_engine_reset(void* engine, void* ic);
     const char* ailater_engine_get_preedit(void* engine, void* ic);
+    const char* ailater_engine_get_commit_text(void* engine, void* ic);
     const char** ailater_engine_get_candidates(void* engine, void* ic);
     void ailater_engine_free_string(char* s);
 }
@@ -117,6 +118,18 @@ public:
     }
 
     void updateUI(InputContext* ic) {
+        // Check if there's text to commit
+        const char* commitText = ailater_engine_get_commit_text(engine_, ic);
+        if (commitText && *commitText) {
+            ic->commitString(std::string(commitText));
+            // After commit, clear input panel
+            ic->inputPanel().setPreedit(Text());
+            ic->inputPanel().setCandidateList(nullptr);
+            ic->updatePreedit();
+            ic->updateUserInterface(UserInterfaceComponent::InputPanel);
+            return;
+        }
+
         // Get preedit text from Rust
         const char* preedit = ailater_engine_get_preedit(engine_, ic);
         if (preedit && *preedit) {
@@ -141,8 +154,8 @@ public:
             }
             candidateList->setLabels(labels);
 
-            // Add candidates (up to page size)
-            for (int i = 0; candidates[i] != nullptr && i < pageSize; i++) {
+            // Add all candidates (CommonCandidateList handles paging)
+            for (int i = 0; candidates[i] != nullptr; i++) {
                 auto candidateWord = std::make_unique<AilaterCandidateWord>(
                     candidates[i], i, engine_, ic
                 );
