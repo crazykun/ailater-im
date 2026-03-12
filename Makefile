@@ -54,8 +54,11 @@ install: build config-tool
 	@echo "Installing tray icons..."
 	for size in 16 22 24; do \
 		install -d $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/status; \
-		install -m 644 $(ICON_SRC_DIR)/status/$${size}/fcitx-ailater.svg $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/status/; \
-		install -m 644 $(ICON_SRC_DIR)/status/$${size}/fcitx-ailater-dark.svg $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/status/; \
+		install -d $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/panel; \
+		install -m 644 $(ICON_SRC_DIR)/status/$${size}/fcitx-ailater-im.svg $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/status/; \
+		install -m 644 $(ICON_SRC_DIR)/status/$${size}/fcitx-ailater-im-dark.svg $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/status/; \
+		install -m 644 $(ICON_SRC_DIR)/panel/$${size}/fcitx-ailater-im.svg $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/panel/; \
+		install -m 644 $(ICON_SRC_DIR)/panel/$${size}/fcitx-ailater-im-dark.svg $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/panel/; \
 	done
 	@echo "Installing desktop entry..."
 	install -d $(DESTDIR)$(PREFIX)/share/applications
@@ -77,8 +80,10 @@ uninstall:
 	done
 	rm -f $(DESTDIR)$(ICON_DIR)/scalable/apps/org.fcitx.Fcitx5.ailater-im.svg
 	for size in 16 22 24; do \
-		rm -f $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/status/fcitx-ailater.svg; \
-		rm -f $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/status/fcitx-ailater-dark.svg; \
+		rm -f $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/status/fcitx-ailater-im.svg; \
+		rm -f $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/status/fcitx-ailater-im-dark.svg; \
+		rm -f $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/panel/fcitx-ailater-im.svg; \
+		rm -f $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/panel/fcitx-ailater-im-dark.svg; \
 	done
 	@echo "Updating icon cache..."
 	gtk-update-icon-cache $(DESTDIR)$(ICON_DIR) 2>/dev/null || true
@@ -141,8 +146,11 @@ install-user: build
 	@echo "Installing tray icons..."
 	for size in 16 22 24; do \
 		install -d ~/.local/share/icons/hicolor/$${size}x$${size}/status; \
-		install -m 644 $(ICON_SRC_DIR)/status/$${size}/fcitx-ailater.svg ~/.local/share/icons/hicolor/$${size}x$${size}/status/; \
-		install -m 644 $(ICON_SRC_DIR)/status/$${size}/fcitx-ailater-dark.svg ~/.local/share/icons/hicolor/$${size}x$${size}/status/; \
+		install -d ~/.local/share/icons/hicolor/$${size}x$${size}/panel; \
+		install -m 644 $(ICON_SRC_DIR)/status/$${size}/fcitx-ailater-im.svg ~/.local/share/icons/hicolor/$${size}x$${size}/status/; \
+		install -m 644 $(ICON_SRC_DIR)/status/$${size}/fcitx-ailater-im-dark.svg ~/.local/share/icons/hicolor/$${size}x$${size}/status/; \
+		install -m 644 $(ICON_SRC_DIR)/panel/$${size}/fcitx-ailater-im.svg ~/.local/share/icons/hicolor/$${size}x$${size}/panel/; \
+		install -m 644 $(ICON_SRC_DIR)/panel/$${size}/fcitx-ailater-im-dark.svg ~/.local/share/icons/hicolor/$${size}x$${size}/panel/; \
 	done
 	@echo "Updating icon cache..."
 	gtk-update-icon-cache ~/.local/share/icons/hicolor 2>/dev/null || true
@@ -160,8 +168,10 @@ uninstall-user:
 	done
 	rm -f ~/.local/share/icons/hicolor/scalable/apps/org.fcitx.Fcitx5.ailater-im.svg
 	for size in 16 22 24; do \
-		rm -f ~/.local/share/icons/hicolor/$${size}x$${size}/status/fcitx-ailater.svg; \
-		rm -f ~/.local/share/icons/hicolor/$${size}x$${size}/status/fcitx-ailater-dark.svg; \
+		rm -f ~/.local/share/icons/hicolor/$${size}x$${size}/status/fcitx-ailater-im.svg; \
+		rm -f ~/.local/share/icons/hicolor/$${size}x$${size}/status/fcitx-ailater-im-dark.svg; \
+		rm -f ~/.local/share/icons/hicolor/$${size}x$${size}/panel/fcitx-ailater-im.svg; \
+		rm -f ~/.local/share/icons/hicolor/$${size}x$${size}/panel/fcitx-ailater-im-dark.svg; \
 	done
 	@echo "Updating icon cache..."
 	gtk-update-icon-cache ~/.local/share/icons/hicolor 2>/dev/null || true
