@@ -5,7 +5,7 @@
 PREFIX ?= /usr
 LIB_DIR = $(PREFIX)/lib/fcitx5
 DATA_DIR = $(PREFIX)/share/ailater-im
-CONFIG_DIR = $(PREFIX)/share/fcitx5/config-addon
+ADDON_DIR = $(PREFIX)/share/fcitx5/addon
 
 # Rust target
 TARGET ?= release
@@ -26,16 +26,16 @@ install: build
 	@echo "Installing to $(PREFIX)..."
 	install -d $(DESTDIR)$(LIB_DIR)
 	install -d $(DESTDIR)$(DATA_DIR)/dict
-	install -d $(DESTDIR)$(CONFIG_DIR)
+	install -d $(DESTDIR)$(ADDON_DIR)
 	install -m 755 target/$(TARGET)/libailater_im.so $(DESTDIR)$(LIB_DIR)/
-	install -m 644 conf/ailater-im.conf $(DESTDIR)$(CONFIG_DIR)/
+	install -m 644 conf/ailater-im.conf $(DESTDIR)$(ADDON_DIR)/
 	install -m 644 data/system.dict $(DESTDIR)$(DATA_DIR)/dict/
 	install -m 644 data/config.toml $(DESTDIR)$(DATA_DIR)/
 
 uninstall:
 	@echo "Uninstalling from $(PREFIX)..."
 	rm -f $(DESTDIR)$(LIB_DIR)/libailater_im.so
-	rm -f $(DESTDIR)$(CONFIG_DIR)/ailater-im.conf
+	rm -f $(DESTDIR)$(ADDON_DIR)/ailater-im.conf
 	rm -rf $(DESTDIR)$(DATA_DIR)
 
 clean:
@@ -78,9 +78,9 @@ install-user: build
 	@echo "Installing to user directory..."
 	install -d ~/.local/lib/fcitx5
 	install -d ~/.local/share/ailater-im/dict
-	install -d ~/.local/share/fcitx5/config-addon
+	install -d ~/.local/share/fcitx5/addon
 	install -m 755 target/$(TARGET)/libailater_im.so ~/.local/lib/fcitx5/
-	install -m 644 conf/ailater-im.conf ~/.local/share/fcitx5/config-addon/
+	install -m 644 conf/ailater-im.conf ~/.local/share/fcitx5/addon/
 	install -m 644 data/system.dict ~/.local/share/ailater-im/dict/
 	install -m 644 data/config.toml ~/.local/share/ailater-im/
 
