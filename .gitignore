@@ -26,3 +26,4 @@ Thumbs.db
 /doc/
 AGENTS.md
 CLAUDE.md
+config-tool/target/*

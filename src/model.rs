@@ -314,7 +314,21 @@ pub fn create_model_client(config: ModelConfig) -> Box<dyn ModelBackend> {
         "remote" => Box::new(RemoteModelClient::new(config)),
         #[cfg(feature = "local-model")]
         "local" => Box::new(LocalModelClient::new(config).unwrap()),
+        "none" | "disabled" => Box::new(NoOpModelClient),
         _ => Box::new(HybridModelClient::new(config)),
+    }
+}
+
+/// No-op model client for when AI is disabled
+struct NoOpModelClient;
+
+impl ModelBackend for NoOpModelClient {
+    fn predict(&self, _context: &str, _input: &str) -> Vec<PredictionResult> {
+        Vec::new()
+    }
+
+    fn is_available(&self) -> bool {
+        false
     }
 }
 

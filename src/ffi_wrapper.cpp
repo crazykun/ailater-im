@@ -12,6 +12,7 @@
 #include <fcitx/inputmethodentry.h>
 #include <fcitx/inputpanel.h>
 #include <fcitx/event.h>
+#include <fcitx/candidatelist.h>
 #include <fcitx-utils/i18n.h>
 #include <fcitx-utils/log.h>
 
@@ -25,6 +26,8 @@ extern "C" {
     int ailater_engine_handle_key(void* engine, void* ic, uint32_t keysym, uint32_t keycode, uint32_t state, bool is_release);
     void ailater_engine_reset(void* engine, void* ic);
     const char* ailater_engine_get_preedit(void* engine, void* ic);
+    const char** ailater_engine_get_candidates(void* engine, void* ic);
+    void ailater_engine_free_string(char* s);
 }
 
 namespace fcitx {
@@ -99,6 +102,25 @@ public:
         } else {
             ic->inputPanel().setPreedit(Text());
         }
+
+        // Get candidates from Rust and populate candidate list
+        const char** candidates = ailater_engine_get_candidates(engine_, ic);
+        if (candidates && *candidates) {
+            // Build vector of candidate strings
+            std::vector<std::string> candidateStrings;
+            for (int i = 0; candidates[i] != nullptr; i++) {
+                candidateStrings.push_back(candidates[i]);
+            }
+
+            // Use DisplayOnlyCandidateList for simple display
+            auto candidateList = std::make_unique<DisplayOnlyCandidateList>();
+            candidateList->setContent(std::move(candidateStrings));
+            candidateList->setCursorIndex(0);
+            ic->inputPanel().setCandidateList(std::move(candidateList));
+        } else {
+            ic->inputPanel().setCandidateList(nullptr);
+        }
+
         ic->updatePreedit();
         ic->updateUserInterface(UserInterfaceComponent::InputPanel);
     }

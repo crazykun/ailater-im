@@ -1,14 +1,15 @@
 # ailater-im Configuration
-# 
+#
 # This is the default configuration file for the AI-powered input method.
 # Copy this file to ~/.config/ailater-im/config.toml to customize.
 
 [model]
-# Model type: "remote", "local", or "hybrid"
+# Model type: "none", "remote", "local", or "hybrid"
+# - none: Disable AI model, use only local dictionary
 # - remote: Use HTTP API to call AI model
 # - local: Use local model inference (requires local-model feature)
 # - hybrid: Try remote first, fallback to local
-model_type = "remote"
+model_type = "none"
 
 # API endpoint for remote model
 # For local AI server (like llama.cpp, vllm, etc.)
@@ -56,7 +57,8 @@ page_size = 5
 auto_commit_on_punctuation = true
 
 # Enable phrase prediction using AI
-enable_phrase_prediction = true
+# Set to false to use only local dictionary
+enable_phrase_prediction = false
 
 # Minimum input length before AI prediction kicks in
 min_ai_input_length = 2

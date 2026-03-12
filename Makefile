@@ -9,6 +9,8 @@ ADDON_DIR = $(PREFIX)/share/fcitx5/addon
 INPUTMETHOD_DIR = $(PREFIX)/share/fcitx5/inputmethod
 ICON_DIR = $(PREFIX)/share/icons/hicolor
 ICON_SRC_DIR = src/img/icons
+BIN_DIR = $(PREFIX)/bin
+CONFIG_TOOL_DIR = config-tool
 
 # Rust target
 TARGET ?= release
@@ -17,25 +19,31 @@ CARGO_FLAGS = --$(TARGET)
 # Features
 FEATURES ?= fcitx5,remote-model
 
-.PHONY: all build install uninstall uninstall-user clean test doc
+.PHONY: all build install uninstall uninstall-user clean test doc config-tool
 
-all: build
+all: build config-tool
 
 build:
 	@echo "Building ailater-im..."
 	cargo build $(CARGO_FLAGS) --features "$(FEATURES)"
 
-install: build
+config-tool:
+	@echo "Building config tool..."
+	cd $(CONFIG_TOOL_DIR) && cargo build --release
+
+install: build config-tool
 	@echo "Installing to $(PREFIX)..."
 	install -d $(DESTDIR)$(LIB_DIR)
 	install -d $(DESTDIR)$(DATA_DIR)/dict
 	install -d $(DESTDIR)$(ADDON_DIR)
 	install -d $(DESTDIR)$(INPUTMETHOD_DIR)
+	install -d $(DESTDIR)$(BIN_DIR)
 	install -m 755 target/$(TARGET)/libailater_im.so $(DESTDIR)$(LIB_DIR)/
 	install -m 644 conf/ailater-im.conf $(DESTDIR)$(ADDON_DIR)/
 	install -m 644 conf/inputmethod/ailater-im.conf $(DESTDIR)$(INPUTMETHOD_DIR)/
 	install -m 644 data/system.dict $(DESTDIR)$(DATA_DIR)/dict/
 	install -m 644 data/config.toml $(DESTDIR)$(DATA_DIR)/
+	install -m 755 $(CONFIG_TOOL_DIR)/target/release/ailater-config $(DESTDIR)$(BIN_DIR)/ailater-config
 	@echo "Installing icons..."
 	for size in 16 22 24 48; do \
 		install -d $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/apps; \
@@ -43,6 +51,9 @@ install: build
 	done
 	install -d $(DESTDIR)$(ICON_DIR)/scalable/apps
 	install -m 644 $(ICON_SRC_DIR)/scalable/apps/ailater-im.svg $(DESTDIR)$(ICON_DIR)/scalable/apps/org.fcitx.Fcitx5.ailater-im.svg
+	@echo "Installing desktop entry..."
+	install -d $(DESTDIR)$(PREFIX)/share/applications
+	install -m 644 $(CONFIG_TOOL_DIR)/ailater-config.desktop $(DESTDIR)$(PREFIX)/share/applications/
 	@echo "Updating icon cache..."
 	gtk-update-icon-cache $(DESTDIR)$(ICON_DIR) 2>/dev/null || true
 
@@ -51,6 +62,8 @@ uninstall:
 	rm -f $(DESTDIR)$(LIB_DIR)/libailater_im.so
 	rm -f $(DESTDIR)$(ADDON_DIR)/ailater-im.conf
 	rm -f $(DESTDIR)$(INPUTMETHOD_DIR)/ailater-im.conf
+	rm -f $(DESTDIR)$(BIN_DIR)/ailater-config
+	rm -f $(DESTDIR)$(PREFIX)/share/applications/ailater-config.desktop
 	rm -rf $(DESTDIR)$(DATA_DIR)
 	@echo "Removing icons..."
 	for size in 16 22 24 48; do \
@@ -62,6 +75,7 @@ uninstall:
 
 clean:
 	cargo clean
+	cd $(CONFIG_TOOL_DIR) && cargo clean 2>/dev/null || true
 
 test:
 	cargo test --all-features

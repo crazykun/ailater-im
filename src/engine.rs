@@ -490,18 +490,29 @@ impl InputEngine {
     
     /// Add AI-predicted candidates
     fn add_ai_candidates(&self, state: &mut InputState) {
+        // Skip if model is disabled or not available
         if !self.model.is_available() {
             return;
         }
-        
+
+        // Skip if phrase prediction is disabled in config
+        if !self.config.input.enable_phrase_prediction {
+            return;
+        }
+
+        // Skip if input is too short for AI prediction
+        if state.preedit.len() < self.config.input.min_ai_input_length {
+            return;
+        }
+
         let predictions = self.model.predict(&state.context, &state.preedit);
-        
+
         for pred in predictions {
             // Check if already in candidates
             if state.candidates.iter().any(|c| c.text == pred.text) {
                 continue;
             }
-            
+
             state.candidates.push(Candidate {
                 text: pred.text,
                 pinyin: state.preedit.clone(),

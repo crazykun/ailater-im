@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=AI Later Settings
+Name[zh_CN]=AI Later 输入法设置
+Comment=Configure AI Later input method
+Comment[zh_CN]=配置 AI Later 智能输入法
+Exec=ailater-config
+Icon=ailater-im
+Terminal=false
+Type=Application
+Categories=Settings;Utility;
+Keywords=input;method;fcitx;IME;settings;
+Keywords[zh_CN]=输入;输入法;fcitx;设置;

@@ -71,7 +71,7 @@ pub struct ModelConfig {
     pub cache_size: usize,
 }
 
-fn default_model_type() -> String { "remote".to_string() }
+fn default_model_type() -> String { "none".to_string() }
 fn default_api_endpoint() -> String { "http://localhost:8080/v1".to_string() }
 fn default_model_name() -> String { "qwen-0.8b".to_string() }
 fn default_max_tokens() -> u32 { 50 }
@@ -123,7 +123,7 @@ pub struct InputConfig {
     pub auto_commit_on_punctuation: bool,
     
     /// Enable phrase prediction
-    #[serde(default = "default_true")]
+    #[serde(default)]
     pub enable_phrase_prediction: bool,
     
     /// Minimum input length for AI prediction
