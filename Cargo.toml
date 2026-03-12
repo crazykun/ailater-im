@@ -47,11 +47,15 @@ dashmap = "5.5"
 # Configuration
 directories = "5.0"
 
+[build-dependencies]
+cc = "1.0"
+
 [features]
-default = ["remote-model"]
+default = ["fcitx5", "remote-model"]
+fcitx5 = []
 remote-model = []
 local-model = ["tokenizers", "candle-core", "candle-nn", "candle-transformers"]
-full = ["remote-model", "local-model"]
+full = ["fcitx5", "remote-model", "local-model"]
 
 [profile.release]
 lto = true

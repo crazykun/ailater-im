@@ -3,7 +3,7 @@
 
 # Installation prefix
 PREFIX ?= /usr
-LIB_DIR = $(PREFIX)/lib/fcitx5
+LIB_DIR = $(PREFIX)/lib/x86_64-linux-gnu/fcitx5
 DATA_DIR = $(PREFIX)/share/ailater-im
 ADDON_DIR = $(PREFIX)/share/fcitx5/addon
 
@@ -76,10 +76,10 @@ lint:
 # Install to user directory
 install-user: build
 	@echo "Installing to user directory..."
-	install -d ~/.local/lib/fcitx5
+	install -d ~/.local/lib/x86_64-linux-gnu/fcitx5
 	install -d ~/.local/share/ailater-im/dict
 	install -d ~/.local/share/fcitx5/addon
-	install -m 755 target/$(TARGET)/libailater_im.so ~/.local/lib/fcitx5/
+	install -m 755 target/$(TARGET)/libailater_im.so ~/.local/lib/x86_64-linux-gnu/fcitx5/
 	install -m 644 conf/ailater-im.conf ~/.local/share/fcitx5/addon/
 	install -m 644 data/system.dict ~/.local/share/ailater-im/dict/
 	install -m 644 data/config.toml ~/.local/share/ailater-im/

@@ -18,7 +18,7 @@
 //!
 //! The input method consists of several components:
 //!
-//! 1. **FFI Layer** (`ffi`, `ffi_exports`): C-compatible interface for fcitx5
+//! 1. **FFI Layer** (`ffi`, `ffi_exports`, `ffi_fcitx5`): C-compatible interface for fcitx5
 //! 2. **Engine** (`engine`): Core input processing logic
 //! 3. **Model** (`model`): AI model client for predictions
 //! 4. **Dictionary** (`dictionary`): Word lookup and frequency management
@@ -27,6 +27,7 @@
 
 pub mod ffi;
 pub mod ffi_exports;
+pub mod ffi_fcitx5;
 pub mod engine;
 pub mod model;
 pub mod config;

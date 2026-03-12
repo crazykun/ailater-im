@@ -1,0 +1,121 @@
+/*
+ * ailater-im - C++ wrapper for fcitx5 plugin
+ * 
+ * This file provides the C++ interface that fcitx5 expects,
+ * and forwards calls to the Rust implementation.
+ */
+
+#include <fcitx/addonfactory.h>
+#include <fcitx/addonmanager.h>
+#include <fcitx/instance.h>
+#include <fcitx/inputmethodengine.h>
+#include <fcitx/inputmethodentry.h>
+#include <fcitx/inputpanel.h>
+#include <fcitx/event.h>
+#include <fcitx-utils/i18n.h>
+#include <fcitx-utils/log.h>
+
+#include <string>
+#include <memory>
+
+// External Rust functions
+extern "C" {
+    void* ailater_engine_create(void* instance);
+    void ailater_engine_destroy(void* engine);
+    int ailater_engine_handle_key(void* engine, void* ic, uint32_t keysym, uint32_t keycode, uint32_t state, bool is_release);
+    void ailater_engine_reset(void* engine, void* ic);
+    const char* ailater_engine_get_preedit(void* engine, void* ic);
+}
+
+namespace fcitx {
+
+class AilaterEngine : public InputMethodEngineV2 {
+public:
+    AilaterEngine(Instance* instance) : instance_(instance) {
+        engine_ = ailater_engine_create(instance);
+        FCITX_INFO() << "AilaterEngine created";
+    }
+    
+    ~AilaterEngine() override {
+        if (engine_) {
+            ailater_engine_destroy(engine_);
+        }
+        FCITX_INFO() << "AilaterEngine destroyed";
+    }
+    
+    void activate(const InputMethodEntry& entry, InputContextEvent& event) override {
+        FCITX_UNUSED(entry);
+        FCITX_UNUSED(event);
+        FCITX_INFO() << "AilaterEngine activated";
+    }
+    
+    void deactivate(const InputMethodEntry& entry, InputContextEvent& event) override {
+        FCITX_UNUSED(entry);
+        FCITX_UNUSED(event);
+        FCITX_INFO() << "AilaterEngine deactivated";
+    }
+    
+    void keyEvent(const InputMethodEntry& entry, KeyEvent& keyEvent) override {
+        FCITX_UNUSED(entry);
+        
+        auto* ic = keyEvent.inputContext();
+        Key key = keyEvent.key();
+        
+        if (keyEvent.isRelease()) {
+            return;
+        }
+        
+        uint32_t keysym = key.sym();
+        uint32_t keycode = key.code();
+        uint32_t state = 0;
+        
+        if (key.states().test(KeyState::Shift)) state |= (1 << 0);
+        if (key.states().test(KeyState::Ctrl)) state |= (1 << 1);
+        if (key.states().test(KeyState::Alt)) state |= (1 << 2);
+        if (key.states().test(KeyState::Super)) state |= (1 << 3);
+        
+        int result = ailater_engine_handle_key(engine_, ic, keysym, keycode, state, keyEvent.isRelease());
+        
+        if (result == 2) {  // CONSUME
+            keyEvent.filterAndAccept();
+        } else if (result == 1) {  // FORWARD
+            keyEvent.filter();
+        }
+        
+        updateUI(ic);
+    }
+    
+    void reset(const InputMethodEntry& entry, InputContextEvent& event) override {
+        FCITX_UNUSED(entry);
+        ailater_engine_reset(engine_, event.inputContext());
+        updateUI(event.inputContext());
+    }
+    
+    void updateUI(InputContext* ic) {
+        // Get preedit text from Rust
+        const char* preedit = ailater_engine_get_preedit(engine_, ic);
+        if (preedit && *preedit) {
+            ic->inputPanel().setPreedit(Text(preedit));
+        } else {
+            ic->inputPanel().setPreedit(Text());
+        }
+        ic->updatePreedit();
+        ic->updateUserInterface(UserInterfaceComponent::InputPanel);
+    }
+
+private:
+    Instance* instance_;
+    void* engine_;
+};
+
+class AilaterEngineFactory : public AddonFactory {
+public:
+    AddonInstance* create(AddonManager* manager) override {
+        return new AilaterEngine(manager->instance());
+    }
+};
+
+}  // namespace fcitx
+
+// Use FCITX_ADDON_FACTORY macro - this creates the fcitx_addon_factory_instance symbol
+FCITX_ADDON_FACTORY(fcitx::AilaterEngineFactory);
