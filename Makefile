@@ -44,13 +44,19 @@ install: build config-tool
 	install -m 644 data/system.dict $(DESTDIR)$(DATA_DIR)/dict/
 	install -m 644 data/config.toml $(DESTDIR)$(DATA_DIR)/
 	install -m 755 $(CONFIG_TOOL_DIR)/target/release/ailater-config $(DESTDIR)$(BIN_DIR)/ailater-config
-	@echo "Installing icons..."
+	@echo "Installing app icons..."
 	for size in 16 22 24 48; do \
 		install -d $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/apps; \
 		install -m 644 $(ICON_SRC_DIR)/$${size}x$${size}/apps/ailater-im.png $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/apps/org.fcitx.Fcitx5.ailater-im.png; \
 	done
 	install -d $(DESTDIR)$(ICON_DIR)/scalable/apps
 	install -m 644 $(ICON_SRC_DIR)/scalable/apps/ailater-im.svg $(DESTDIR)$(ICON_DIR)/scalable/apps/org.fcitx.Fcitx5.ailater-im.svg
+	@echo "Installing tray icons..."
+	for size in 16 22 24; do \
+		install -d $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/status; \
+		install -m 644 $(ICON_SRC_DIR)/status/$${size}/fcitx-ailater.svg $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/status/; \
+		install -m 644 $(ICON_SRC_DIR)/status/$${size}/fcitx-ailater-dark.svg $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/status/; \
+	done
 	@echo "Installing desktop entry..."
 	install -d $(DESTDIR)$(PREFIX)/share/applications
 	install -m 644 $(CONFIG_TOOL_DIR)/ailater-config.desktop $(DESTDIR)$(PREFIX)/share/applications/
@@ -70,6 +76,10 @@ uninstall:
 		rm -f $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/apps/org.fcitx.Fcitx5.ailater-im.png; \
 	done
 	rm -f $(DESTDIR)$(ICON_DIR)/scalable/apps/org.fcitx.Fcitx5.ailater-im.svg
+	for size in 16 22 24; do \
+		rm -f $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/status/fcitx-ailater.svg; \
+		rm -f $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/status/fcitx-ailater-dark.svg; \
+	done
 	@echo "Updating icon cache..."
 	gtk-update-icon-cache $(DESTDIR)$(ICON_DIR) 2>/dev/null || true
 
@@ -121,13 +131,19 @@ install-user: build
 	install -m 644 conf/inputmethod/ailater-im.conf ~/.local/share/fcitx5/inputmethod/
 	install -m 644 data/system.dict ~/.local/share/ailater-im/dict/
 	install -m 644 data/config.toml ~/.local/share/ailater-im/
-	@echo "Installing icons..."
+	@echo "Installing app icons..."
 	for size in 16 22 24 48; do \
 		install -d ~/.local/share/icons/hicolor/$${size}x$${size}/apps; \
 		install -m 644 $(ICON_SRC_DIR)/$${size}x$${size}/apps/ailater-im.png ~/.local/share/icons/hicolor/$${size}x$${size}/apps/org.fcitx.Fcitx5.ailater-im.png; \
 	done
 	install -d ~/.local/share/icons/hicolor/scalable/apps
 	install -m 644 $(ICON_SRC_DIR)/scalable/apps/ailater-im.svg ~/.local/share/icons/hicolor/scalable/apps/org.fcitx.Fcitx5.ailater-im.svg
+	@echo "Installing tray icons..."
+	for size in 16 22 24; do \
+		install -d ~/.local/share/icons/hicolor/$${size}x$${size}/status; \
+		install -m 644 $(ICON_SRC_DIR)/status/$${size}/fcitx-ailater.svg ~/.local/share/icons/hicolor/$${size}x$${size}/status/; \
+		install -m 644 $(ICON_SRC_DIR)/status/$${size}/fcitx-ailater-dark.svg ~/.local/share/icons/hicolor/$${size}x$${size}/status/; \
+	done
 	@echo "Updating icon cache..."
 	gtk-update-icon-cache ~/.local/share/icons/hicolor 2>/dev/null || true
 
@@ -143,6 +159,10 @@ uninstall-user:
 		rm -f ~/.local/share/icons/hicolor/$${size}x$${size}/apps/org.fcitx.Fcitx5.ailater-im.png; \
 	done
 	rm -f ~/.local/share/icons/hicolor/scalable/apps/org.fcitx.Fcitx5.ailater-im.svg
+	for size in 16 22 24; do \
+		rm -f ~/.local/share/icons/hicolor/$${size}x$${size}/status/fcitx-ailater.svg; \
+		rm -f ~/.local/share/icons/hicolor/$${size}x$${size}/status/fcitx-ailater-dark.svg; \
+	done
 	@echo "Updating icon cache..."
 	gtk-update-icon-cache ~/.local/share/icons/hicolor 2>/dev/null || true
 
