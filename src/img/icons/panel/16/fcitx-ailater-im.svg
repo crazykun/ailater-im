@@ -1,25 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
-    </linearGradient>
-  </defs>
-
-  <!-- Background circle -->
-  <circle cx="64" cy="64" r="60" fill="url(#bg-gradient)"/>
-
-  <!-- AI text -->
-  <text x="64" y="58" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="white" text-anchor="middle">AI</text>
-
-  <!-- Input symbol (keyboard-like) -->
-  <rect x="34" y="68" width="60" height="24" rx="4" fill="white" opacity="0.9"/>
-  <rect x="38" y="72" width="8" height="6" rx="1" fill="#667eea"/>
-  <rect x="50" y="72" width="8" height="6" rx="1" fill="#667eea"/>
-  <rect x="62" y="72" width="8" height="6" rx="1" fill="#667eea"/>
-  <rect x="74" y="72" width="8" height="6" rx="1" fill="#667eea"/>
-  <rect x="46" y="82" width="8" height="6" rx="1" fill="#667eea"/>
-  <rect x="58" y="82" width="10" height="6" rx="1" fill="#667eea"/>
-  <rect x="72" y="82" width="8" height="6" rx="1" fill="#667eea"/>
+<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+  <title>ailater-im</title>
+  <g>
+    <!-- Background rounded rect -->
+    <rect x="1" y="1" width="14" height="14" rx="3" fill="url(#bg)"/>
+    <!-- AI Text -->
+    <text x="8" y="11" font-family="Arial, sans-serif" font-size="6" font-weight="bold" fill="white" text-anchor="middle">AI</text>
+    <defs>
+      <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#667eea"/>
+        <stop offset="100%" style="stop-color:#764ba2"/>
+      </linearGradient>
+    </defs>
+  </g>
 </svg>
