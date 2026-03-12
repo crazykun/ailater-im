@@ -9,7 +9,7 @@ use crate::config::Config;
 use crate::dictionary::Dictionary;
 use crate::ffi::{FcitxInputContext, FcitxInstance, IMReturnValue, KeySym, KeyState};
 use crate::model::{ModelBackend, PredictionSource, create_model_client};
-use crate::pinyin::{PinyinParser, FuzzyPinyinMatcher, get_candidates};
+use crate::pinyin::{PinyinParser, FuzzyPinyinMatcher, get_candidates, get_initial_map};
 
 /// Input state for each input context
 #[derive(Debug, Clone)]
@@ -338,19 +338,24 @@ impl InputEngine {
     fn update_candidates(&self, state: &mut InputState) {
         state.candidates.clear();
         state.current_page = 0;
-        
+
         if state.preedit.is_empty() {
             return;
         }
-        
+
         // Parse pinyin into syllables
         let syllables = self.pinyin_parser.parse(&state.preedit);
-        
-        // Get candidates for each syllable
-        if syllables.len() == 1 {
+
+        // Check if this is initial letter input (all single letters)
+        let is_initial_input = syllables.iter().all(|s| s.len() == 1 && s.chars().next().map_or(false, |c| c.is_ascii_alphabetic()));
+
+        if is_initial_input && syllables.len() > 1 {
+            // Handle initial letter input (e.g., "cs" -> "ce shi" -> "测试")
+            self.add_initial_candidates(state, &syllables);
+        } else if syllables.len() == 1 {
             // Single syllable - get direct matches
             self.add_dictionary_candidates(state, &syllables[0]);
-            
+
             // Add fuzzy matches if enabled
             if self.config.input.fuzzy_pinyin {
                 self.add_fuzzy_candidates(state, &syllables[0]);
@@ -359,22 +364,87 @@ impl InputEngine {
             // Multiple syllables - try phrase matching
             self.add_phrase_candidates(state, &syllables);
         }
-        
+
         // Add AI predictions if enabled and input is long enough
-        if self.config.input.enable_phrase_prediction 
+        if self.config.input.enable_phrase_prediction
             && state.preedit.len() >= self.config.input.min_ai_input_length {
             self.add_ai_candidates(state);
         }
-        
+
         // Sort by score
         state.candidates.sort_by(|a, b| {
             b.score.partial_cmp(&a.score).unwrap_or(std::cmp::Ordering::Equal)
         });
-        
+
         // Limit candidates
         state.candidates.truncate(self.config.input.num_candidates);
     }
-    
+
+    /// Add candidates for initial letter input (e.g., "cs" -> "测试")
+    fn add_initial_candidates(&self, state: &mut InputState, initials: &[String]) {
+        let initial_map = get_initial_map();
+
+        // Expand each initial to common pinyin (limit to top 3 per initial)
+        let mut pinyin_combinations: Vec<Vec<String>> = vec![Vec::new()];
+
+        for initial_str in initials {
+            if let Some(ch) = initial_str.chars().next() {
+                if let Some(pinyins) = initial_map.get(&ch) {
+                    // Take top 3 most common pinyin for this initial
+                    let top_pinyins: Vec<String> = pinyins.iter().map(|s| s.to_string()).take(3).collect();
+
+                    // Generate new combinations
+                    let mut new_combinations: Vec<Vec<String>> = Vec::new();
+                    for existing in &pinyin_combinations {
+                        for py in &top_pinyins {
+                            let mut new_comb: Vec<String> = existing.clone();
+                            new_comb.push(py.clone());
+                            new_combinations.push(new_comb);
+                        }
+                    }
+                    pinyin_combinations = new_combinations;
+                }
+            }
+        }
+
+        // Limit combinations and try to find matches in dictionary
+        let max_combinations = 20;
+        for pinyin_combo in pinyin_combinations.into_iter().take(max_combinations) {
+            let pinyin_str: String = pinyin_combo.join("");
+
+            // Try to find this phrase in dictionary
+            let entries = self.dictionary.lookup(&pinyin_str);
+            let has_entries = !entries.is_empty();
+            for entry in &entries {
+                state.candidates.push(Candidate {
+                    text: entry.word.clone(),
+                    pinyin: entry.pinyin.clone(),
+                    score: entry.frequency as f32 / 100.0 + 0.5, // Boost score for exact match
+                    source: PredictionSource::Dictionary,
+                });
+            }
+
+            // If no direct match, try individual character lookup
+            if !has_entries && pinyin_combo.len() == 2 {
+                let entries1 = self.dictionary.lookup(&pinyin_combo[0]);
+                let entries2 = self.dictionary.lookup(&pinyin_combo[1]);
+
+                // Generate a few combinations (limit to avoid too many)
+                let max_per_char = 3;
+                for (i, e1) in entries1.iter().take(max_per_char).enumerate() {
+                    for (j, e2) in entries2.iter().take(max_per_char).enumerate() {
+                        state.candidates.push(Candidate {
+                            text: format!("{}{}", e1.word, e2.word),
+                            pinyin: format!("{} {}", e1.pinyin, e2.pinyin),
+                            score: (e1.frequency + e2.frequency) as f32 / 200.0 - (i + j) as f32 * 0.1,
+                            source: PredictionSource::Dictionary,
+                        });
+                    }
+                }
+            }
+        }
+    }
+
     /// Add candidates from dictionary
     fn add_dictionary_candidates(&self, state: &mut InputState, pinyin: &str) {
         let entries = self.dictionary.lookup(pinyin);

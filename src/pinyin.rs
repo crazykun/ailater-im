@@ -448,6 +448,60 @@ fn get_pinyin_map() -> &'static HashMap<&'static str, Vec<&'static str>> {
     })
 }
 
+/// Initial letter to pinyin syllables mapping (for abbreviation input)
+static INITIAL_MAP: OnceLock<HashMap<char, Vec<&'static str>>> = OnceLock::new();
+
+/// Get the initial letter to pinyin mapping
+pub fn get_initial_map() -> &'static HashMap<char, Vec<&'static str>> {
+    INITIAL_MAP.get_or_init(|| {
+        let mut map = HashMap::new();
+        // b
+        map.insert('b', vec!["ba", "bai", "ban", "bang", "bao", "bei", "ben", "beng", "bi", "bian", "biao", "bie", "bin", "bing", "bo", "bu"]);
+        // p
+        map.insert('p', vec!["pa", "pai", "pan", "pang", "pao", "pei", "pen", "peng", "pi", "pian", "piao", "pie", "pin", "ping", "po", "pou", "pu"]);
+        // m
+        map.insert('m', vec!["ma", "mai", "man", "mang", "mao", "me", "mei", "men", "meng", "mi", "mian", "miao", "mie", "min", "ming", "miu", "mo", "mou", "mu"]);
+        // f
+        map.insert('f', vec!["fa", "fan", "fang", "fei", "fen", "feng", "fo", "fou", "fu"]);
+        // d
+        map.insert('d', vec!["da", "dai", "dan", "dang", "dao", "de", "dei", "deng", "di", "dia", "dian", "diao", "die", "ding", "diu", "dong", "dou", "du", "duan", "dui", "dun", "duo"]);
+        // t
+        map.insert('t', vec!["ta", "tai", "tan", "tang", "tao", "te", "teng", "ti", "tian", "tiao", "tie", "ting", "tong", "tou", "tu", "tuan", "tui", "tun", "tuo"]);
+        // n
+        map.insert('n', vec!["na", "nai", "nan", "nang", "nao", "ne", "nei", "nen", "neng", "ni", "nian", "niang", "niao", "nie", "nin", "ning", "niu", "nong", "nu", "nuan", "nun", "nuo", "nv"]);
+        // l
+        map.insert('l', vec!["la", "lai", "lan", "lang", "lao", "le", "lei", "leng", "li", "lia", "lian", "liang", "liao", "lie", "lin", "ling", "liu", "lo", "long", "lou", "lu", "lv", "luan", "lue", "lun", "luo"]);
+        // g
+        map.insert('g', vec!["ga", "gai", "gan", "gang", "gao", "ge", "gei", "gen", "geng", "gong", "gou", "gu", "gua", "guai", "guan", "guang", "gui", "gun", "guo"]);
+        // k
+        map.insert('k', vec!["ka", "kai", "kan", "kang", "kao", "ke", "kei", "ken", "keng", "kong", "kou", "ku", "kua", "kuai", "kuan", "kuang", "kui", "kun", "kuo"]);
+        // h
+        map.insert('h', vec!["ha", "hai", "han", "hang", "hao", "he", "hei", "hen", "heng", "hong", "hou", "hu", "hua", "huai", "huan", "huang", "hui", "hun", "huo"]);
+        // j
+        map.insert('j', vec!["ji", "jia", "jian", "jiang", "jiao", "jie", "jin", "jing", "jiong", "jiu", "ju", "juan", "jue", "jun"]);
+        // q
+        map.insert('q', vec!["qi", "qia", "qian", "qiang", "qiao", "qie", "qin", "qing", "qiong", "qiu", "qu", "quan", "que", "qun"]);
+        // x
+        map.insert('x', vec!["xi", "xia", "xian", "xiang", "xiao", "xie", "xin", "xing", "xiong", "xiu", "xu", "xuan", "xue", "xun"]);
+        // zh
+        map.insert('z', vec!["za", "zai", "zan", "zang", "zao", "ze", "zei", "zen", "zeng", "zha", "zhai", "zhan", "zhang", "zhao", "zhe", "zhen", "zheng", "zhi", "zhong", "zhou", "zhu", "zhua", "zhuai", "zhuan", "zhuang", "zhui", "zhun", "zhuo", "zi", "zong", "zou", "zu", "zuan", "zui", "zun", "zuo"]);
+        // ch
+        map.insert('c', vec!["ca", "cai", "can", "cang", "cao", "ce", "cei", "cen", "ceng", "cha", "chai", "chan", "chang", "chao", "che", "chen", "cheng", "chi", "chong", "chou", "chu", "chua", "chuai", "chuan", "chuang", "chui", "chun", "chuo", "ci", "cong", "cou", "cu", "cuan", "cui", "cun", "cuo"]);
+        // sh
+        map.insert('s', vec!["sa", "sai", "san", "sang", "sao", "se", "sei", "sen", "seng", "sha", "shai", "shan", "shang", "shao", "she", "shei", "shen", "sheng", "shi", "shou", "shu", "shua", "shuai", "shuan", "shuang", "shui", "shun", "shuo", "si", "song", "sou", "su", "suan", "sui", "sun", "suo"]);
+        // r
+        map.insert('r', vec!["ran", "rang", "rao", "re", "ren", "reng", "ri", "rong", "rou", "ru", "ruan", "rui", "run", "ruo"]);
+        // z (already added above as z -> all z/zh sounds)
+        // c (already added above as c -> all c/ch sounds)
+        // s (already added above as s -> all s/sh sounds)
+        // y
+        map.insert('y', vec!["ya", "yan", "yang", "yao", "ye", "yi", "yin", "ying", "yo", "yong", "you", "yu", "yuan", "yue", "yun"]);
+        // w
+        map.insert('w', vec!["wa", "wai", "wan", "wang", "wei", "wen", "weng", "wo", "wu"]);
+        map
+    })
+}
+
 /// Pinyin parser for input segmentation
 pub struct PinyinParser {
     syllables: Vec<String>,
@@ -462,15 +516,16 @@ impl PinyinParser {
             .collect();
         Self { syllables }
     }
-    
+
     /// Parse input string into pinyin syllables
+    /// Supports abbreviation (e.g., "cs" -> ["c", "s"])
     /// Uses greedy longest match algorithm
     pub fn parse(&self, input: &str) -> Vec<String> {
         let input = input.to_lowercase();
         let mut result = Vec::new();
         let mut pos = 0;
         let chars: Vec<char> = input.chars().collect();
-        
+
         while pos < chars.len() {
             let mut found = false;
             // Try longest match first (up to 6 characters for pinyin syllables)
@@ -483,9 +538,9 @@ impl PinyinParser {
                     break;
                 }
             }
-            
+
             if !found {
-                // Single character that's not a valid pinyin
+                // Single character that's not a valid pinyin - treat as initial letter
                 let ch = chars[pos];
                 if ch.is_ascii_alphabetic() {
                     result.push(ch.to_string());
@@ -493,10 +548,10 @@ impl PinyinParser {
                 pos += 1;
             }
         }
-        
+
         result
     }
-    
+
     /// Check if a string is a valid pinyin syllable
     pub fn is_valid_syllable(&self, s: &str) -> bool {
         self.syllables.contains(&s.to_lowercase())
@@ -512,11 +567,31 @@ impl Default for PinyinParser {
 /// Get candidate characters for a pinyin syllable
 pub fn get_candidates(pinyin: &str) -> Vec<&'static str> {
     let map = get_pinyin_map();
+    let initial_map = get_initial_map();
     let pinyin_lower = pinyin.to_lowercase();
-    
-    map.get(pinyin_lower.as_str())
-        .map(|v| v.clone())
-        .unwrap_or_default()
+
+    // First try direct lookup
+    if let Some(candidates) = map.get(pinyin_lower.as_str()) {
+        return candidates.clone();
+    }
+
+    // If it's a single character (initial letter), expand to all possible pinyin
+    if pinyin_lower.len() == 1 {
+        if let Some(chars) = pinyin_lower.chars().next() {
+            if let Some(pinyins) = initial_map.get(&chars) {
+                // Collect all candidates from all possible pinyin
+                let mut all_candidates = Vec::new();
+                for py in pinyins {
+                    if let Some(candidates) = map.get(*py) {
+                        all_candidates.extend(candidates.iter().copied());
+                    }
+                }
+                return all_candidates;
+            }
+        }
+    }
+
+    Vec::new()
 }
 
 /// Fuzzy pinyin matching rules
