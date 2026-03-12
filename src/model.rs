@@ -39,6 +39,8 @@ pub enum PredictionSource {
     UserHistory,
     /// From fuzzy matching
     FuzzyMatch,
+    /// Built-in pinyin mapping
+    BuiltIn,
 }
 
 /// Remote model client (HTTP API based)

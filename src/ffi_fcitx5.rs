@@ -3,12 +3,12 @@
 //! This module exports C functions that are called by the C++ wrapper.
 //! It forwards calls to the InputEngine in engine.rs.
 
-use std::ffi::{c_void, c_char, CString};
+use std::ffi::{c_char, c_void, CString};
 use std::ptr;
 use std::sync::OnceLock;
 
-use crate::engine::InputEngine;
 use crate::config::Config;
+use crate::engine::InputEngine;
 use crate::ffi::FcitxInputContext;
 
 /// Global engine instance (singleton)
@@ -146,7 +146,10 @@ pub extern "C" fn ailater_engine_focus_out(engine: *mut c_void, ic: *mut c_void)
 /// The pointer is valid until the next call to this function.
 /// Returns NULL if there is no preedit text.
 #[no_mangle]
-pub extern "C" fn ailater_engine_get_preedit(engine: *mut c_void, ic: *mut c_void) -> *const c_char {
+pub extern "C" fn ailater_engine_get_preedit(
+    engine: *mut c_void,
+    ic: *mut c_void,
+) -> *const c_char {
     if engine.is_null() {
         return ptr::null();
     }
@@ -175,7 +178,10 @@ pub extern "C" fn ailater_engine_get_preedit(engine: *mut c_void, ic: *mut c_voi
 ///
 /// IMPORTANT: After retrieving the commit text, it will be cleared.
 #[no_mangle]
-pub extern "C" fn ailater_engine_get_commit_text(engine: *mut c_void, ic: *mut c_void) -> *const c_char {
+pub extern "C" fn ailater_engine_get_commit_text(
+    engine: *mut c_void,
+    ic: *mut c_void,
+) -> *const c_char {
     if engine.is_null() {
         return ptr::null();
     }
@@ -243,9 +249,7 @@ pub extern "C" fn ailater_engine_get_candidates(
     // Build array of pointers on heap and leak it
     // This is acceptable for an FFI boundary where the caller
     // will read the data and we'll clean up on next call
-    let mut pointers: Vec<*const c_char> = cstring_buffer.iter()
-        .map(|c| c.as_ptr())
-        .collect();
+    let mut pointers: Vec<*const c_char> = cstring_buffer.iter().map(|c| c.as_ptr()).collect();
 
     // Add null terminator
     pointers.push(ptr::null());
@@ -268,7 +272,20 @@ pub extern "C" fn ailater_engine_get_candidate_count(
     let engine = unsafe { &*(engine as *const InputEngine) };
     let ic = ic as *mut FcitxInputContext;
 
-    engine.get_candidates(ic).len()
+    engine.get_total_candidates(ic)
+}
+
+/// Get the current page index
+#[no_mangle]
+pub extern "C" fn ailater_engine_get_current_page(engine: *mut c_void, ic: *mut c_void) -> usize {
+    if engine.is_null() {
+        return 0;
+    }
+
+    let engine = unsafe { &*(engine as *const InputEngine) };
+    let ic = ic as *mut FcitxInputContext;
+
+    engine.get_current_page(ic)
 }
 
 /// Get candidate at specific index (0-based)
@@ -329,14 +346,7 @@ pub extern "C" fn ailater_engine_select_candidate(
     // Simulate pressing the number key (1-9 => keysym 0x31-0x39)
     let keysym = 0x30 + (index + 1) as u32;
 
-    let _result = engine.handle_key(
-        std::ptr::null_mut(),
-        ic,
-        keysym,
-        0,
-        0,
-        false,
-    );
+    let _result = engine.handle_key(std::ptr::null_mut(), ic, keysym, 0, 0, false);
 
     // Return the committed text
     match CString::new(committed_text.as_str()) {

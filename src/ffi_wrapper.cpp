@@ -29,6 +29,8 @@ extern "C" {
     const char* ailater_engine_get_preedit(void* engine, void* ic);
     const char* ailater_engine_get_commit_text(void* engine, void* ic);
     const char** ailater_engine_get_candidates(void* engine, void* ic);
+    size_t ailater_engine_get_candidate_count(void* engine, void* ic);
+    size_t ailater_engine_get_current_page(void* engine, void* ic);
     void ailater_engine_free_string(char* s);
 }
 
@@ -162,7 +164,10 @@ public:
                 candidateList->append(std::move(candidateWord));
             }
 
-            candidateList->setCursorIndex(0);
+            // Set cursor to first candidate of current page
+            size_t currentPage = ailater_engine_get_current_page(engine_, ic);
+            candidateList->setCursorIndex(currentPage * pageSize);
+
             ic->inputPanel().setCandidateList(std::move(candidateList));
         } else {
             ic->inputPanel().setCandidateList(nullptr);

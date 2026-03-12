@@ -21,6 +21,7 @@ pub enum KeySym {
     Down = 0xff54,
     PageUp = 0xff55,
     PageDown = 0xff56,
+    Plus = 0x002b,
     ShiftL = 0xffe1,
     ShiftR = 0xffe2,
     ControlL = 0xffe3,
@@ -47,6 +48,7 @@ impl KeySym {
             0xff54 => KeySym::Down,
             0xff55 => KeySym::PageUp,
             0xff56 => KeySym::PageDown,
+            0x002b => KeySym::Plus,
             0xffe1 => KeySym::ShiftL,
             0xffe2 => KeySym::ShiftR,
             0xffe3 => KeySym::ControlL,
@@ -58,17 +60,17 @@ impl KeySym {
             _ => KeySym::None,
         }
     }
-    
+
     /// Check if this is a letter key (a-z)
     pub fn is_letter(&self, raw: u32) -> bool {
         (raw >= 0x0041 && raw <= 0x005a) || (raw >= 0x0061 && raw <= 0x007a)
     }
-    
+
     /// Check if this is a number key (0-9)
     pub fn is_number(&self, raw: u32) -> bool {
         raw >= 0x0030 && raw <= 0x0039
     }
-    
+
     /// Check if this is a printable character
     pub fn is_printable(&self, raw: u32) -> bool {
         raw >= 0x0020 && raw < 0x007f
@@ -86,19 +88,19 @@ impl KeyState {
     pub const CTRL: KeyState = KeyState(1 << 1);
     pub const ALT: KeyState = KeyState(1 << 2);
     pub const SUPER: KeyState = KeyState(1 << 3);
-    
+
     pub fn has_shift(&self) -> bool {
         (self.0 & Self::SHIFT.0) != 0
     }
-    
+
     pub fn has_ctrl(&self) -> bool {
         (self.0 & Self::CTRL.0) != 0
     }
-    
+
     pub fn has_alt(&self) -> bool {
         (self.0 & Self::ALT.0) != 0
     }
-    
+
     pub fn has_super(&self) -> bool {
         (self.0 & Self::SUPER.0) != 0
     }
@@ -118,11 +120,11 @@ pub enum IMReturnValue {
 
 /// Opaque pointer to FcitxInstance
 #[repr(transparent)]
-pub struct FcitxInstance(pub c_void);
+pub struct FcitxInstance(pub *mut c_void);
 
 /// Opaque pointer to FcitxInputContext
 #[repr(transparent)]
-pub struct FcitxInputContext(pub c_void);
+pub struct FcitxInputContext(pub *mut c_void);
 
 /// Fcitx5 IM Class structure
 #[repr(C)]
@@ -144,16 +146,13 @@ pub struct FcitxIMEntry {
 
 // External fcitx5 API functions (linked at runtime)
 extern "C" {
-    // These would be linked from fcitx5 libraries
-    // For now, we define them for the FFI interface
-    
     #[link_name = "fcitx_instance_commit_string"]
     pub fn fcitx_instance_commit_string(
         instance: *mut FcitxInstance,
         ic: *mut FcitxInputContext,
         str: *const c_char,
     );
-    
+
     #[link_name = "fcitx_instance_set_preedit"]
     pub fn fcitx_instance_set_preedit(
         instance: *mut FcitxInstance,
@@ -164,11 +163,7 @@ extern "C" {
 }
 
 /// Safe wrapper for committing a string
-pub unsafe fn commit_string(
-    instance: *mut FcitxInstance,
-    ic: *mut FcitxInputContext,
-    text: &str,
-) {
+pub unsafe fn commit_string(instance: *mut FcitxInstance, ic: *mut FcitxInputContext, text: &str) {
     if let Ok(c_text) = CString::new(text) {
         fcitx_instance_commit_string(instance, ic, c_text.as_ptr());
     }
