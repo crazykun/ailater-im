@@ -1,0 +1,104 @@
+# fcitx5-ai-im System Dictionary
+# Format: word<TAB>pinyin<TAB>frequency<TAB>last_used
+# This is a sample dictionary with common words
+
+# Common single characters
+你	ni	100	0
+好	hao	99	0
+我	wo	98	0
+是	shi	97	0
+的	de	96	0
+了	le	95	0
+在	zai	94	0
+有	you	93	0
+人	ren	92	0
+这	zhe	91	0
+中	zhong	90	0
+大	da	89	0
+来	lai	88	0
+到	dao	87	0
+以	yi	86	0
+时	shi	85	0
+候	hou	84	0
+们	men	83	0
+起	qi	82	0
+会	hui	81	0
+能	neng	80	0
+对	dui	79	0
+出	chu	78	0
+能	neng	77	0
+说	shuo	76	0
+生	sheng	75	0
+下	xia	74	0
+可	ke	73	0
+也	ye	72	0
+后	hou	71	0
+自	zi	70	0
+作	zuo	69	0
+里	li	68	0
+用	yong	67	0
+道	dao	66	0
+进	jin	65	0
+去	qu	64	0
+子	zi	63	0
+两	liang	62	0
+点	dian	61	0
+心	xin	60	0
+个	ge	59	0
+回	hui	58	0
+位	wei	57	0
+天	tian	56	0
+地	di	55	0
+
+# Common phrases
+你好	ni hao	200	0
+我们	wo men	199	0
+什么	shen me	198	0
+这个	zhe ge	197	0
+不是	bu shi	196	0
+没有	mei you	195	0
+可以	ke yi	194	0
+知道	zhi dao	193	0
+现在	xian zai	192	0
+因为	yin wei	191	0
+所以	suo yi	190	0
+但是	dan shi	189	0
+如果	ru guo	188	0
+还是	hai shi	187	0
+已经	yi jing	186	0
+可能	ke neng	185	0
+这样	zhe yang	184	0
+那里	na li	183	0
+这里	zhe li	182	0
+怎么	zen me	181	0
+为什么	wei shen me	180	0
+怎么样	zen me yang	179	0
+对不起	dui bu qi	178	0
+没关系	mei guan xi	177	0
+谢谢	xie xie	176	0
+再见	zai jian	175	0
+早上好	zao shang hao	174	0
+晚上好	wan shang hao	173	0
+很高兴	hen gao xing	172	0
+认识	ren shi	171	0
+朋友	peng you	170	0
+工作	gong zuo	169	0
+学习	xue xi	168	0
+电脑	dian nao	167	0
+手机	shou ji	166	0
+网络	wang luo	165	0
+软件	ruan jian	164	0
+程序	cheng xu	163	0
+开发	kai fa	162	0
+设计	she ji	161	0
+公司	gong si	160	0
+中国	zhong guo	159	0
+北京	bei jing	158	0
+上海	shang hai	157	0
+深圳	shen zhen	156	0
+广州	guang zhou	155	0
+杭州	hang zhou	154	0
+南京	nan jing	153	0
+成都	cheng du	152	0
+西安	xi an	151	0
+武汉	wu han	150	0

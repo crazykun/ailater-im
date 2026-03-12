@@ -1,0 +1,27 @@
+# Rust
+/target/
+**/*.rs.bk
+Cargo.lock
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Build
+dist/
+*.tar.gz
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test
+*.profraw
+*.profdata
+
+# Documentation
+/doc/
+AGENTS.md

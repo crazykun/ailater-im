@@ -1,0 +1,91 @@
+# fcitx5-ai-im Configuration
+# 
+# This is the default configuration file for the AI-powered input method.
+# Copy this file to ~/.config/fcitx5-ai-im/config.toml to customize.
+
+[model]
+# Model type: "remote", "local", or "hybrid"
+# - remote: Use HTTP API to call AI model
+# - local: Use local model inference (requires local-model feature)
+# - hybrid: Try remote first, fallback to local
+model_type = "remote"
+
+# API endpoint for remote model
+# For local AI server (like llama.cpp, vllm, etc.)
+api_endpoint = "http://localhost:8080/v1"
+
+# API key (optional, for cloud services)
+# api_key = "your-api-key-here"
+
+# Model name for API calls
+model_name = "qwen-0.8b"
+
+# Maximum tokens for prediction
+max_tokens = 50
+
+# Temperature for generation (0.0 - 2.0)
+temperature = 0.7
+
+# Enable prediction caching
+enable_cache = true
+
+# Cache size (number of entries)
+cache_size = 10000
+
+# Local model path (for local model type)
+# local_model_path = "/path/to/model"
+
+[input]
+# Maximum preedit length
+max_preedit_length = 64
+
+# Number of candidates to show
+num_candidates = 10
+
+# Enable fuzzy pinyin matching
+# Allows common pinyin confusions like zh/z, ch/c, sh/s
+fuzzy_pinyin = true
+
+# Enable smart correction
+smart_correction = true
+
+# Page size for candidate list
+page_size = 5
+
+# Auto-commit on punctuation
+auto_commit_on_punctuation = true
+
+# Enable phrase prediction using AI
+enable_phrase_prediction = true
+
+# Minimum input length before AI prediction kicks in
+min_ai_input_length = 2
+
+[ui]
+# Show candidate numbers
+show_candidate_numbers = true
+
+# Vertical candidate list
+vertical_candidate_list = false
+
+# Font size for candidates
+font_size = 12
+
+# Custom font family (optional)
+# font_family = "Noto Sans CJK SC"
+
+[dictionary]
+# System dictionary path
+system_dictionary = "/usr/share/fcitx5-ai-im/dict/system.dict"
+
+# User dictionary path
+user_dictionary = "~/.local/share/fcitx5-ai-im/user.dict"
+
+# Enable user dictionary learning
+enable_learning = true
+
+# Maximum user dictionary size
+max_user_dictionary_size = 100000
+
+# Frequency decay factor (for forgetting old entries)
+frequency_decay = 0.99
