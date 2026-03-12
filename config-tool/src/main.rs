@@ -413,7 +413,7 @@ impl ConfigApp {
             ui.label("支持 AI 模型预测和本地词典");
             ui.add_space(20.0);
 
-            ui.hyperlink_to("项目主页", "git@github.com:crazykun/ailater-im.git");
+            ui.hyperlink_to("项目主页", "https://github.com/crazykun/ailater-im#");
             ui.label("© 2026 AI Later Project");
         });
     }
