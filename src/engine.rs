@@ -127,17 +127,15 @@ impl InputEngine {
         }
 
         // Handle different key types
+        // Note: Arrow keys and PageUp/PageDown are forwarded to fcitx5's
+        // CommonCandidateList for standard paging behavior
         let result = match key {
             KeySym::BackSpace => self.handle_backspace(&mut input_state),
             KeySym::Return => self.handle_return(&mut input_state),
             KeySym::Escape => self.handle_escape(&mut input_state),
             KeySym::Space => self.handle_space(&mut input_state),
-            KeySym::Up => self.handle_page_up(&mut input_state),
-            KeySym::Down => self.handle_page_down(&mut input_state),
-            KeySym::Left => self.handle_page_up(&mut input_state),
-            KeySym::Right => self.handle_page_down(&mut input_state),
-            KeySym::PageUp => self.handle_page_up(&mut input_state),
-            KeySym::PageDown => self.handle_page_down(&mut input_state),
+            KeySym::Minus => self.handle_page_up(&mut input_state),
+            KeySym::Equal => self.handle_page_down(&mut input_state),
             KeySym::Plus => self.handle_page_down(&mut input_state),
             _ => {
                 // Handle letter keys for pinyin input
@@ -272,21 +270,23 @@ impl InputEngine {
         IMReturnValue::Consume
     }
 
-    /// Handle up arrow (previous candidate)
-    fn handle_up(&self, state: &mut InputState) -> IMReturnValue {
+    /// Handle page up (for - key)
+    fn handle_page_up(&self, state: &mut InputState) -> IMReturnValue {
         if !state.is_active || state.candidates.is_empty() {
             return IMReturnValue::Forward;
         }
 
         if state.current_page > 0 {
             state.current_page -= 1;
+            IMReturnValue::Consume
+        } else {
+            // Already on first page, forward the key to application
+            IMReturnValue::Forward
         }
-
-        IMReturnValue::Consume
     }
 
-    /// Handle down arrow (next candidate)
-    fn handle_down(&self, state: &mut InputState) -> IMReturnValue {
+    /// Handle page down (for + and = keys)
+    fn handle_page_down(&self, state: &mut InputState) -> IMReturnValue {
         if !state.is_active || state.candidates.is_empty() {
             return IMReturnValue::Forward;
         }
@@ -294,19 +294,11 @@ impl InputEngine {
         let max_page = (state.candidates.len() - 1) / self.config.input.page_size;
         if state.current_page < max_page {
             state.current_page += 1;
+            IMReturnValue::Consume
+        } else {
+            // Already on last page, forward the key to application
+            IMReturnValue::Forward
         }
-
-        IMReturnValue::Consume
-    }
-
-    /// Handle page up
-    fn handle_page_up(&self, state: &mut InputState) -> IMReturnValue {
-        self.handle_up(state)
-    }
-
-    /// Handle page down
-    fn handle_page_down(&self, state: &mut InputState) -> IMReturnValue {
-        self.handle_down(state)
     }
 
     /// Update candidate list based on current preedit

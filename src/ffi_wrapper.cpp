@@ -36,23 +36,22 @@ extern "C" {
 
 namespace fcitx {
 
-// Custom CandidateWord that calls Rust engine when selected
+// CandidateWord that stores the index within the current page (0-based)
 class AilaterCandidateWord : public CandidateWord {
 public:
-    AilaterCandidateWord(const std::string& text, int index, void* engine, InputContext* ic)
-        : CandidateWord(Text(text)), index_(index), engine_(engine), ic_(ic) {}
+    AilaterCandidateWord(const std::string& text, int indexInPage, void* engine, InputContext* ic)
+        : CandidateWord(Text(text)), indexInPage_(indexInPage), engine_(engine), ic_(ic) {}
 
     void select(InputContext* inputContext) const override {
-        // Simulate number key press to select this candidate
-        // keysym for '1' is 0x31, so for index 0 we use 0x31, etc.
-        uint32_t keysym = 0x30 + (index_ + 1);
+        // Press the number key (1-9) corresponding to the index
+        // indexInPage_ is 0-based, so add 1 to get the key number
+        uint32_t keysym = 0x30 + (indexInPage_ + 1);
         ailater_engine_handle_key(engine_, ic_, keysym, 0, 0, false);
-        // Force UI update
         inputContext->updateUserInterface(UserInterfaceComponent::InputPanel);
     }
 
 private:
-    int index_;
+    int indexInPage_;
     void* engine_;
     InputContext* ic_;
 };
@@ -102,15 +101,62 @@ public:
         if (key.states().test(KeyState::Alt)) state |= (1 << 2);
         if (key.states().test(KeyState::Super)) state |= (1 << 3);
 
+        // fcitx5 KeySym values for arrow and page keys
+        const uint32_t FcitxKey_Left = 0xff51;
+        const uint32_t FcitxKey_Up = 0xff52;
+        const uint32_t FcitxKey_Right = 0xff53;
+        const uint32_t FcitxKey_Down = 0xff54;
+        const uint32_t FcitxKey_PageUp = 0xff55;
+        const uint32_t FcitxKey_PageDown = 0xff56;
+        const uint32_t FcitxKey_equal = 0x3d;   // = key
+        const uint32_t FcitxKey_minus = 0x2d;   // - key
+        const uint32_t FcitxKey_plus = 0x2b;    // + key (Shift+=)
+
+        // Check if we have candidates
+        size_t candidateCount = ailater_engine_get_candidate_count(engine_, ic);
+        bool hasCandidates = (candidateCount > 0);
+
+        // Handle paging keys when we have candidates
+        if (hasCandidates) {
+            int pageSize = instance_->globalConfig().defaultPageSize();
+            size_t currentPage = ailater_engine_get_current_page(engine_, ic);
+            size_t maxPage = (candidateCount - 1) / pageSize;
+
+            // Next page keys: =, +, PageDown, Down, Right
+            // Only allow if not on last page
+            if ((keysym == FcitxKey_equal || keysym == FcitxKey_plus ||
+                 keysym == FcitxKey_PageDown || keysym == FcitxKey_Down ||
+                 keysym == FcitxKey_Right) && currentPage < maxPage) {
+                keyEvent.filterAndAccept();
+                // Call Rust engine with Plus keysym to advance page
+                ailater_engine_handle_key(engine_, ic, 0x002b, 0, 0, false);
+                updateUI(ic);
+                return;
+            }
+            // Previous page keys: -, PageUp, Up, Left
+            // Only allow if not on first page
+            if ((keysym == FcitxKey_minus || keysym == FcitxKey_PageUp ||
+                 keysym == FcitxKey_Up || keysym == FcitxKey_Left) && currentPage > 0) {
+                keyEvent.filterAndAccept();
+                // Call Rust engine with Minus keysym to go back
+                ailater_engine_handle_key(engine_, ic, 0x002d, 0, 0, false);
+                updateUI(ic);
+                return;
+            }
+        }
+
+        // Pass other keys to Rust engine
         int result = ailater_engine_handle_key(engine_, ic, keysym, keycode, state, keyEvent.isRelease());
 
         if (result == 2) {  // CONSUME
             keyEvent.filterAndAccept();
+            updateUI(ic);
         } else if (result == 1) {  // FORWARD
-            keyEvent.filter();
+            // Let fcitx5 framework handle it
+        } else {
+            // result == 0 (IGNORE)
+            updateUI(ic);
         }
-
-        updateUI(ic);
     }
 
     void reset(const InputMethodEntry& entry, InputContextEvent& event) override {
@@ -140,35 +186,60 @@ public:
             ic->inputPanel().setPreedit(Text());
         }
 
-        // Get candidates from Rust and populate candidate list
+        // Get all candidates from Rust
         const char** candidates = ailater_engine_get_candidates(engine_, ic);
         if (candidates && *candidates) {
-            auto candidateList = std::make_unique<CommonCandidateList>();
-
-            // Get page size from fcitx5 global config
             int pageSize = instance_->globalConfig().defaultPageSize();
-            candidateList->setPageSize(pageSize);
-
-            // Set labels to 1-pageSize (e.g., "1", "2", ..., "9" for page size 9)
-            std::vector<std::string> labels;
-            for (int i = 0; i < pageSize && i < 9; i++) {
-                labels.push_back(std::to_string(i + 1));
-            }
-            candidateList->setLabels(labels);
-
-            // Add all candidates (CommonCandidateList handles paging)
-            for (int i = 0; candidates[i] != nullptr; i++) {
-                auto candidateWord = std::make_unique<AilaterCandidateWord>(
-                    candidates[i], i, engine_, ic
-                );
-                candidateList->append(std::move(candidateWord));
-            }
-
-            // Set cursor to first candidate of current page
             size_t currentPage = ailater_engine_get_current_page(engine_, ic);
-            candidateList->setCursorIndex(currentPage * pageSize);
 
-            ic->inputPanel().setCandidateList(std::move(candidateList));
+            // Count total candidates
+            int totalCandidates = 0;
+            for (int i = 0; candidates[i] != nullptr; i++) {
+                totalCandidates++;
+            }
+
+            // Calculate start and end indices for current page
+            int startIndex = static_cast<int>(currentPage * pageSize);
+            int endIndex = std::min(startIndex + pageSize, totalCandidates);
+
+            // Clamp current page to valid range
+            if (startIndex >= totalCandidates && totalCandidates > 0) {
+                // Current page is out of bounds, this shouldn't happen
+                // But protect against it by not showing candidates
+                FCITX_WARN() << "Current page out of bounds: page=" << currentPage 
+                             << " maxPage=" << ((totalCandidates - 1) / pageSize);
+            }
+
+            // Only create candidate list if current page has candidates
+            if (startIndex < totalCandidates) {
+                auto candidateList = std::make_unique<CommonCandidateList>();
+                candidateList->setPageSize(pageSize);
+
+                // Set labels to 1-pageSize
+                std::vector<std::string> labels;
+                for (int i = 0; i < pageSize && i < 9; i++) {
+                    labels.push_back(std::to_string(i + 1));
+                }
+                candidateList->setLabels(labels);
+
+                // Add only candidates for current page
+                for (int i = startIndex; i < endIndex; i++) {
+                    // Index within current page (0-based)
+                    int indexInPage = i - startIndex;
+                    auto candidateWord = std::make_unique<AilaterCandidateWord>(
+                        candidates[i], indexInPage, engine_, ic
+                    );
+                    candidateList->append(std::move(candidateWord));
+                }
+
+                // Set cursor to first candidate of current page (index 0)
+                candidateList->setCursorIndex(0);
+
+                ic->inputPanel().setCandidateList(std::move(candidateList));
+            } else {
+                // No candidates on current page, clear the panel
+                ic->inputPanel().setCandidateList(nullptr);
+            }
         } else {
             ic->inputPanel().setCandidateList(nullptr);
         }
