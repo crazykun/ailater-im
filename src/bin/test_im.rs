@@ -70,7 +70,7 @@ fn main() {
     let ic = std::ptr::null_mut();
     let instance = std::ptr::null_mut();
     
-    // Type "ni"
+    // Type "ni" - test single syllable
     engine.handle_key(instance, ic, 0x006e, 0, 0, false); // n
     engine.handle_key(instance, ic, 0x0069, 0, 0, false); // i
     
@@ -79,19 +79,26 @@ fn main() {
     
     println!("   Input: 'ni'");
     println!("   Preedit: '{}'", preedit);
-    println!("   Candidates: {:?}", candidates.iter().take(5).map(|c| &c.text).collect::<Vec<_>>());
+    println!("   Candidates:");
+    for (i, c) in candidates.iter().take(10).enumerate() {
+        println!("      {}. {} (pinyin: {}, score: {:.2}, source: {:?})", i+1, c.text, c.pinyin, c.score, c.source);
+    }
     
-    // Continue typing "hao"
-    engine.handle_key(instance, ic, 0x0068, 0, 0, false); // h
-    engine.handle_key(instance, ic, 0x0061, 0, 0, false); // a
-    engine.handle_key(instance, ic, 0x006f, 0, 0, false); // o
+    // Clear and test "ceshi"
+    engine.reset(ic);
+    for ch in "ceshi".chars() {
+        engine.handle_key(instance, ic, ch as u32, 0, 0, false);
+    }
     
     let preedit = engine.get_preedit(ic);
     let candidates = engine.get_candidates(ic);
     
-    println!("   Input: 'nihao'");
+    println!("\n   Input: 'ceshi'");
     println!("   Preedit: '{}'", preedit);
-    println!("   Candidates: {:?}", candidates.iter().take(5).map(|c| &c.text).collect::<Vec<_>>());
+    println!("   Candidates:");
+    for (i, c) in candidates.iter().take(10).enumerate() {
+        println!("      {}. {} (pinyin: {}, score: {:.2}, source: {:?})", i+1, c.text, c.pinyin, c.score, c.source);
+    }
     println!("   ✓ Input engine works\n");
     
     // Test 6: Model Client

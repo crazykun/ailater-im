@@ -3,6 +3,7 @@
 //! Main engine that coordinates pinyin parsing, dictionary lookup, and AI prediction.
 
 use parking_lot::RwLock;
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 
 use crate::config::Config;
@@ -71,6 +72,8 @@ pub struct InputEngine {
     model: Box<dyn ModelBackend>,
     /// Input states per context (key: ic pointer)
     states: RwLock<HashMap<usize, InputState>>,
+    /// Commit counter for auto-saving dictionary
+    commit_counter: Arc<AtomicUsize>,
 }
 
 impl InputEngine {
@@ -86,6 +89,7 @@ impl InputEngine {
             dictionary,
             model,
             states: RwLock::new(HashMap::new()),
+            commit_counter: Arc::new(AtomicUsize::new(0)),
         }
     }
 
@@ -329,7 +333,7 @@ impl InputEngine {
                         text: ch.to_string(),
                         pinyin: syllables[0].clone(),
                         score: (100 - idx * 10) as f32,
-                        source: PredictionSource::BuiltIn,
+                        source: PredictionSource::Dictionary,
                     });
                 }
             }
@@ -461,7 +465,7 @@ impl InputEngine {
                 state.candidates.push(Candidate {
                     text: entry.word,
                     pinyin: entry.pinyin,
-                    score: (entry.frequency as f32 / 100.0) * 0.8, // Lower score for fuzzy matches
+                    score: (entry.frequency as f32 / 100.0) * 0.1, // Significantly lower score for fuzzy matches
                     source: PredictionSource::FuzzyMatch,
                 });
             }
@@ -500,7 +504,7 @@ impl InputEngine {
                 // Take top candidates with their frequencies
                 entries
                     .iter()
-                    .take(5)
+                    .take(10)
                     .map(|e| (e.word.clone(), e.frequency))
                     .collect::<Vec<_>>()
             })
@@ -568,7 +572,7 @@ impl InputEngine {
                     text,
                     pinyin: syllables.join(""),
                     score,
-                    source: PredictionSource::BuiltIn,
+                    source: PredictionSource::Dictionary,
                 });
             }
         }
@@ -620,16 +624,24 @@ impl InputEngine {
         // Update context
         state.context.push_str(&candidate.text);
 
-        // Limit context length
+        // Limit context length (use truncate for safe UTF-8 handling)
         if state.context.len() > 100 {
-            let drain = state.context.len() - 100;
-            state.context.drain(0..drain);
+            state.context.truncate(100);
         }
 
         // Clear preedit
         state.preedit.clear();
         state.candidates.clear();
         state.is_active = false;
+
+        // Save user dictionary periodically (every 5 commits)
+        let count = self.commit_counter.fetch_add(1, Ordering::SeqCst) + 1;
+        if count >= 5 {
+            self.commit_counter.store(0, Ordering::SeqCst);
+            if let Err(e) = self.dictionary.save_user_dictionary() {
+                log::warn!("Failed to save user dictionary: {}", e);
+            }
+        }
     }
 
     /// Get current preedit text

@@ -2,12 +2,12 @@
 //!
 //! Handles system dictionary, user dictionary, and frequency management.
 
-use std::collections::HashMap;
-use std::path::{Path, PathBuf};
-use std::fs::{self, File, OpenOptions};
-use std::io::{BufRead, BufReader, BufWriter, Write};
 use parking_lot::RwLock;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::fs::{self, File, OpenOptions};
+use std::io::{BufRead, BufReader, BufWriter, Write};
+use std::path::{Path, PathBuf};
 
 use crate::config::DictionaryConfig;
 
@@ -42,13 +42,13 @@ impl Dictionary {
             user_dict: RwLock::new(HashMap::new()),
             config,
         };
-        
+
         dict.load_system_dictionary();
         dict.load_user_dictionary();
-        
+
         dict
     }
-    
+
     /// Load system dictionary from file
     fn load_system_dictionary(&mut self) {
         let path = expand_path(&self.config.system_dictionary);
@@ -65,7 +65,11 @@ impl Dictionary {
         for try_path in paths_to_try {
             if let Ok(entries) = load_dictionary_file(&try_path) {
                 self.system_dict = entries;
-                log::info!("Loaded system dictionary from {:?} with {} entries", try_path, self.system_dict.len());
+                log::info!(
+                    "Loaded system dictionary from {:?} with {} entries",
+                    try_path,
+                    self.system_dict.len()
+                );
                 return;
             }
         }
@@ -74,7 +78,7 @@ impl Dictionary {
         log::warn!("No system dictionary found, using built-in defaults");
         self.init_default_dictionary();
     }
-    
+
     /// Load user dictionary from file
     fn load_user_dictionary(&mut self) {
         let path = expand_path(&self.config.user_dictionary);
@@ -84,7 +88,7 @@ impl Dictionary {
             log::info!("Loaded user dictionary with {} entries", user_dict.len());
         }
     }
-    
+
     /// Initialize with default common words
     fn init_default_dictionary(&mut self) {
         let default_words = vec![
@@ -205,7 +209,10 @@ impl Dictionary {
             ("hui", vec!["会", "回", "灰", "汇", "挥"]),
             ("hun", vec!["混", "婚", "魂", "昏"]),
             ("huo", vec!["或", "活", "火", "货", "获"]),
-            ("ji", vec!["机", "己", "记", "级", "计", "几", "即", "极", "集", "急"]),
+            (
+                "ji",
+                vec!["机", "己", "记", "级", "计", "几", "即", "极", "集", "急"],
+            ),
             ("jia", vec!["家", "加", "价", "假", "架"]),
             ("jian", vec!["见", "间", "建", "件", "简"]),
             ("jiang", vec!["将", "江", "讲", "强", "奖"]),
@@ -477,7 +484,7 @@ impl Dictionary {
             ("zun", vec!["尊", "遵"]),
             ("zuo", vec!["作", "做", "座", "左"]),
         ];
-        
+
         for (pinyin, words) in default_words {
             let entries: Vec<DictEntry> = words
                 .iter()
@@ -492,11 +499,11 @@ impl Dictionary {
             self.system_dict.insert(pinyin.to_string(), entries);
         }
     }
-    
+
     /// Lookup candidates for a pinyin string
     pub fn lookup(&self, pinyin: &str) -> Vec<DictEntry> {
         let mut results = Vec::new();
-        
+
         // First check user dictionary (higher priority)
         {
             let user_dict = self.user_dict.read();
@@ -504,76 +511,84 @@ impl Dictionary {
                 results.extend(entries.clone());
             }
         }
-        
+
         // Then check system dictionary
         if let Some(entries) = self.system_dict.get(pinyin) {
             for entry in entries {
-                // Don't duplicate entries from user dict
-                if !results.iter().any(|e: &DictEntry| e.word == entry.word) {
+                // Check if this word exists in user dict
+                if let Some(user_entry) = results.iter_mut().find(|e| e.word == entry.word) {
+                    // Merge frequencies: use user frequency + system frequency as boost
+                    user_entry.frequency += entry.frequency;
+                } else {
+                    // Add system entry if not in user dict
                     results.push(entry.clone());
                 }
             }
         }
-        
+
         // Sort by frequency
         results.sort_by(|a, b| b.frequency.cmp(&a.frequency));
-        
+
         results
     }
-    
+
     /// Update word frequency in user dictionary
     pub fn update_frequency(&self, pinyin: &str, word: &str) {
         if !self.config.enable_learning {
             return;
         }
-        
+
         let mut user_dict = self.user_dict.write();
-        
+
         if let Some(entries) = user_dict.get_mut(pinyin) {
             if let Some(entry) = entries.iter_mut().find(|e| e.word == word) {
                 entry.frequency = entry.frequency.saturating_add(1);
-                entry.last_used = Some(std::time::SystemTime::now()
-                    .duration_since(std::time::UNIX_EPOCH)
-                    .map(|d| d.as_secs())
-                    .unwrap_or(0));
+                entry.last_used = Some(
+                    std::time::SystemTime::now()
+                        .duration_since(std::time::UNIX_EPOCH)
+                        .map(|d| d.as_secs())
+                        .unwrap_or(0),
+                );
                 return;
             }
         }
-        
+
         // Add new entry
         let entry = DictEntry {
             word: word.to_string(),
             pinyin: pinyin.to_string(),
             frequency: 1,
-            last_used: Some(std::time::SystemTime::now()
-                .duration_since(std::time::UNIX_EPOCH)
-                .map(|d| d.as_secs())
-                .unwrap_or(0)),
+            last_used: Some(
+                std::time::SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .map(|d| d.as_secs())
+                    .unwrap_or(0),
+            ),
         };
-        
+
         user_dict
             .entry(pinyin.to_string())
             .or_insert_with(Vec::new)
             .push(entry);
     }
-    
+
     /// Save user dictionary to file
     pub fn save_user_dictionary(&self) -> std::io::Result<()> {
         let path = expand_path(&self.config.user_dictionary);
-        
+
         if let Some(parent) = path.parent() {
             fs::create_dir_all(parent)?;
         }
-        
+
         let file = OpenOptions::new()
             .write(true)
             .create(true)
             .truncate(true)
             .open(&path)?;
-        
+
         let mut writer = BufWriter::new(file);
         let user_dict = self.user_dict.read();
-        
+
         for (_pinyin, entries) in user_dict.iter() {
             for entry in entries {
                 writeln!(
@@ -586,7 +601,7 @@ impl Dictionary {
                 )?;
             }
         }
-        
+
         Ok(())
     }
 }
@@ -606,31 +621,28 @@ fn load_dictionary_file(path: &Path) -> std::io::Result<HashMap<String, Vec<Dict
     let file = File::open(path)?;
     let reader = BufReader::new(file);
     let mut dict: HashMap<String, Vec<DictEntry>> = HashMap::new();
-    
+
     for line in reader.lines() {
         let line = line?;
         let parts: Vec<&str> = line.split('\t').collect();
-        
+
         if parts.len() >= 2 {
             let word = parts[0].to_string();
             let pinyin = parts[1].to_string();
-            let frequency = parts.get(2)
-                .and_then(|s| s.parse().ok())
-                .unwrap_or(1);
-            let last_used = parts.get(3)
-                .and_then(|s| s.parse().ok());
-            
+            let frequency = parts.get(2).and_then(|s| s.parse().ok()).unwrap_or(1);
+            let last_used = parts.get(3).and_then(|s| s.parse().ok());
+
             let entry = DictEntry {
                 word,
                 pinyin: pinyin.clone(),
                 frequency,
                 last_used,
             };
-            
+
             dict.entry(pinyin).or_insert_with(Vec::new).push(entry);
         }
     }
-    
+
     Ok(dict)
 }
 
@@ -643,7 +655,7 @@ impl Default for Dictionary {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_dictionary_lookup() {
         let dict = Dictionary::default();
@@ -651,12 +663,12 @@ mod tests {
         assert!(!results.is_empty());
         assert!(results.iter().any(|e| e.word == "你"));
     }
-    
+
     #[test]
     fn test_frequency_update() {
         let dict = Dictionary::default();
         dict.update_frequency("ni", "你");
-        
+
         let results = dict.lookup("ni");
         let ni_entry = results.iter().find(|e| e.word == "你");
         assert!(ni_entry.is_some());

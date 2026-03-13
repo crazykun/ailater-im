@@ -96,6 +96,7 @@ fn get_pinyin_map() -> &'static HashMap<&'static str, Vec<&'static str>> {
         map.insert("chui", vec!["吹", "锤", "垂", "炊"]);
         map.insert("chun", vec!["春", "纯", "唇", "淳"]);
         map.insert("ci", vec!["次", "此", "词", "辞", "慈", "瓷"]);
+        map.insert("ce", vec!["测", "侧", "册", "厕"]);
         map.insert("cong", vec!["从", "聪", "丛", "匆", "葱"]);
         map.insert("cu", vec!["粗", "促", "醋", "簇"]);
         map.insert("cuan", vec!["窜", "攒", "篡"]);
@@ -201,6 +202,7 @@ fn get_pinyin_map() -> &'static HashMap<&'static str, Vec<&'static str>> {
         map.insert("kuang", vec!["况", "矿", "狂", "框", "旷", "眶", "筐", "匡", "诓", "哐", "诳", "夼"]);
         map.insert("kun", vec!["困", "昆", "坤", "捆", "悃", "琨", "髡", "鲲"]);
         map.insert("kuo", vec!["扩", "阔", "括", "廓", "蛞"]);
+        map.insert("l", vec!["了", "列", "累", "落"]);
         map.insert("la", vec!["拉", "啦", "辣", "腊", "蜡", "落", "垃", "喇", "剌", "蓝", "啦"]);
         map.insert("lai", vec!["来", "赖", "莱", "徕", "涞", "濑", "赉", "睐"]);
         map.insert("lan", vec!["兰", "蓝", "烂", "懒", "拦", "篮", "览", "滥", "澜", "缆", "岚", "斓", "榄", "漤", "褴"]);
