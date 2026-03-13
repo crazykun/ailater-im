@@ -56,7 +56,6 @@ install: build config-tool
 	install -m 644 conf/ailater-im.conf $(DESTDIR)$(ADDON_DIR)/
 	install -m 644 conf/inputmethod/ailater-im.conf $(DESTDIR)$(INPUTMETHOD_DIR)/
 	install -m 644 data/system.dict $(DESTDIR)$(DATA_DIR)/dict/
-	install -m 644 data/config.toml $(DESTDIR)$(DATA_DIR)/
 	install -m 755 $(CONFIG_TOOL_DIR)/target/release/ailater-config $(DESTDIR)$(BIN_DIR)/ailater-config
 	@echo "Installing app icons..."
 	for size in 16 22 24 48; do \
@@ -169,7 +168,6 @@ install-user: build
 	install -m 644 conf/ailater-im.conf ~/.local/share/fcitx5/addon/
 	install -m 644 conf/inputmethod/ailater-im.conf ~/.local/share/fcitx5/inputmethod/
 	install -m 644 data/system.dict ~/.local/share/ailater-im/dict/
-	install -m 644 data/config.toml ~/.local/share/ailater-im/
 	install -m 755 $(CONFIG_TOOL_DIR)/target/release/ailater-config ~/.local/bin/ailater-config 2>/dev/null || true
 	@echo "Installing app icons..."
 	for size in 16 22 24 48; do \
@@ -229,7 +227,6 @@ dist: release
 	cp conf/ailater-im.conf dist/
 	cp conf/inputmethod/ailater-im.conf dist/
 	cp data/system.dict dist/
-	cp data/config.toml dist/
 	tar -czvf ailater-im-$(shell date +%Y%m%d).tar.gz dist/
 	rm -rf dist
 
