@@ -278,11 +278,9 @@ impl InputEngine {
 
         if state.current_page > 0 {
             state.current_page -= 1;
-            IMReturnValue::Consume
-        } else {
-            // Already on first page, forward the key to application
-            IMReturnValue::Forward
         }
+
+        IMReturnValue::Consume
     }
 
     /// Handle page down (for + and = keys)
@@ -294,11 +292,9 @@ impl InputEngine {
         let max_page = (state.candidates.len() - 1) / self.config.input.page_size;
         if state.current_page < max_page {
             state.current_page += 1;
-            IMReturnValue::Consume
-        } else {
-            // Already on last page, forward the key to application
-            IMReturnValue::Forward
         }
+
+        IMReturnValue::Consume
     }
 
     /// Update candidate list based on current preedit
@@ -496,15 +492,26 @@ impl InputEngine {
 
     /// Generate character combinations for multiple syllables
     fn generate_combinations(&self, state: &mut InputState, syllables: &[String]) {
-        // Get candidates for each syllable
-        let all_candidates: Vec<Vec<&str>> = syllables.iter().map(|s| get_candidates(s)).collect();
+        // Get candidates for each syllable from dictionary (sorted by frequency)
+        let all_candidates: Vec<Vec<(String, u64)>> = syllables
+            .iter()
+            .map(|s| {
+                let entries = self.dictionary.lookup(s);
+                // Take top candidates with their frequencies
+                entries
+                    .iter()
+                    .take(5)
+                    .map(|e| (e.word.clone(), e.frequency))
+                    .collect::<Vec<_>>()
+            })
+            .collect();
 
         // Check if we have candidates for all syllables
         if all_candidates.iter().any(|c| c.is_empty()) {
             return;
         }
 
-        // Generate first few combinations
+        // Generate combinations with frequency-based scoring
         let mut combinations = Vec::new();
         let max_per_syllable = 3;
 
@@ -512,20 +519,26 @@ impl InputEngine {
         if syllables.len() == 2 {
             for i in 0..all_candidates[0].len().min(max_per_syllable) {
                 for j in 0..all_candidates[1].len().min(max_per_syllable) {
-                    let text = format!("{}{}", all_candidates[0][i], all_candidates[1][j]);
-                    // Lower score than dictionary matches, so dictionary matches appear first
-                    combinations.push((text, 0.5 - (i + j) as f32 * 0.05));
+                    let (word1, freq1) = &all_candidates[0][i];
+                    let (word2, freq2) = &all_candidates[1][j];
+                    let text = format!("{}{}", word1, word2);
+                    // Score based on combined frequency (normalized)
+                    let freq_score = (freq1 + freq2) as f32 / 1000.0;
+                    let pos_penalty = (i + j) as f32 * 0.05;
+                    combinations.push((text, freq_score - pos_penalty));
                 }
             }
         } else if syllables.len() == 3 {
             for i in 0..all_candidates[0].len().min(max_per_syllable) {
                 for j in 0..all_candidates[1].len().min(max_per_syllable) {
                     for k in 0..all_candidates[2].len().min(max_per_syllable) {
-                        let text = format!(
-                            "{}{}{}",
-                            all_candidates[0][i], all_candidates[1][j], all_candidates[2][k]
-                        );
-                        combinations.push((text, 0.4 - (i + j + k) as f32 * 0.04));
+                        let (word1, freq1) = &all_candidates[0][i];
+                        let (word2, freq2) = &all_candidates[1][j];
+                        let (word3, freq3) = &all_candidates[2][k];
+                        let text = format!("{}{}{}", word1, word2, word3);
+                        let freq_score = (freq1 + freq2 + freq3) as f32 / 1000.0;
+                        let pos_penalty = (i + j + k) as f32 * 0.04;
+                        combinations.push((text, freq_score - pos_penalty));
                     }
                 }
             }
@@ -534,14 +547,14 @@ impl InputEngine {
                 for j in 0..all_candidates[1].len().min(2) {
                     for k in 0..all_candidates[2].len().min(2) {
                         for l in 0..all_candidates[3].len().min(2) {
-                            let text = format!(
-                                "{}{}{}{}",
-                                all_candidates[0][i],
-                                all_candidates[1][j],
-                                all_candidates[2][k],
-                                all_candidates[3][l]
-                            );
-                            combinations.push((text, 0.3 - (i + j + k + l) as f32 * 0.03));
+                            let (word1, freq1) = &all_candidates[0][i];
+                            let (word2, freq2) = &all_candidates[1][j];
+                            let (word3, freq3) = &all_candidates[2][k];
+                            let (word4, freq4) = &all_candidates[3][l];
+                            let text = format!("{}{}{}{}", word1, word2, word3, word4);
+                            let freq_score = (freq1 + freq2 + freq3 + freq4) as f32 / 1000.0;
+                            let pos_penalty = (i + j + k + l) as f32 * 0.03;
+                            combinations.push((text, freq_score - pos_penalty));
                         }
                     }
                 }

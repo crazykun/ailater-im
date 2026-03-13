@@ -52,13 +52,27 @@ impl Dictionary {
     /// Load system dictionary from file
     fn load_system_dictionary(&mut self) {
         let path = expand_path(&self.config.system_dictionary);
-        if let Ok(entries) = load_dictionary_file(&path) {
-            self.system_dict = entries;
-            log::info!("Loaded system dictionary with {} entries", self.system_dict.len());
-        } else {
-            // Initialize with default entries
-            self.init_default_dictionary();
+
+        // Try multiple paths in order
+        let paths_to_try = vec![
+            path.clone(),
+            // Development path
+            PathBuf::from("data/system.dict"),
+            // Relative to crate
+            PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("data/system.dict"),
+        ];
+
+        for try_path in paths_to_try {
+            if let Ok(entries) = load_dictionary_file(&try_path) {
+                self.system_dict = entries;
+                log::info!("Loaded system dictionary from {:?} with {} entries", try_path, self.system_dict.len());
+                return;
+            }
         }
+
+        // Initialize with default entries if no dictionary found
+        log::warn!("No system dictionary found, using built-in defaults");
+        self.init_default_dictionary();
     }
     
     /// Load user dictionary from file
