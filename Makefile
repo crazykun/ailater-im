@@ -70,15 +70,21 @@ install: build config-tool
 	for size in 16 22 24; do \
 		install -d $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/status; \
 		install -d $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/panel; \
-		install -m 644 $(ICON_SRC_DIR)/status/$${size}/fcitx-ailater-im.svg $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/status/ailater-im.svg; \
-		install -m 644 $(ICON_SRC_DIR)/status/$${size}/fcitx-ailater-im-dark.svg $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/status/ailater-im-dark.svg; \
-		install -m 644 $(ICON_SRC_DIR)/panel/$${size}/fcitx-ailater-im.svg $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/panel/ailater-im.svg; \
-		install -m 644 $(ICON_SRC_DIR)/panel/$${size}/fcitx-ailater-im-dark.svg $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/panel/ailater-im-dark.svg; \
+		install -m 644 $(ICON_SRC_DIR)/status/$${size}/fcitx-ailater-im.svg $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/status/fcitx-ailater-im.svg; \
+		install -m 644 $(ICON_SRC_DIR)/status/$${size}/fcitx-ailater-im-dark.svg $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/status/fcitx-ailater-im-dark.svg; \
+		install -m 644 $(ICON_SRC_DIR)/panel/$${size}/fcitx-ailater-im.svg $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/panel/fcitx-ailater-im.svg; \
+		install -m 644 $(ICON_SRC_DIR)/panel/$${size}/fcitx-ailater-im-dark.svg $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/panel/fcitx-ailater-im-dark.svg; \
+		ln -sf fcitx-ailater-im.svg $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/status/ailater-im.svg; \
+		ln -sf fcitx-ailater-im-dark.svg $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/status/ailater-im-dark.svg; \
+		ln -sf fcitx-ailater-im.svg $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/panel/ailater-im.svg; \
+		ln -sf fcitx-ailater-im-dark.svg $(DESTDIR)$(ICON_DIR)/$${size}x$${size}/panel/ailater-im-dark.svg; \
 	done
 	@echo "Installing bloom theme icons..."
 	install -d $(DESTDIR)$(BLOOM_ICON_DIR)/status/16
-	install -m 644 $(ICON_SRC_DIR)/status/16/fcitx-ailater-im.svg $(DESTDIR)$(BLOOM_ICON_DIR)/status/16/ailater-im.svg
-	install -m 644 $(ICON_SRC_DIR)/status/16/fcitx-ailater-im-dark.svg $(DESTDIR)$(BLOOM_ICON_DIR)/status/16/ailater-im-dark.svg
+	install -m 644 $(ICON_SRC_DIR)/status/16/fcitx-ailater-im.svg $(DESTDIR)$(BLOOM_ICON_DIR)/status/16/fcitx-ailater-im.svg
+	install -m 644 $(ICON_SRC_DIR)/status/16/fcitx-ailater-im-dark.svg $(DESTDIR)$(BLOOM_ICON_DIR)/status/16/fcitx-ailater-im-dark.svg
+	ln -sf fcitx-ailater-im.svg $(DESTDIR)$(BLOOM_ICON_DIR)/status/16/ailater-im.svg
+	ln -sf fcitx-ailater-im-dark.svg $(DESTDIR)$(BLOOM_ICON_DIR)/status/16/ailater-im-dark.svg
 	@echo "Installing desktop entry..."
 	install -d $(DESTDIR)$(PREFIX)/share/applications
 	install -m 644 $(CONFIG_TOOL_DIR)/ailater-config.desktop $(DESTDIR)$(PREFIX)/share/applications/
@@ -173,17 +179,23 @@ install-user: build
 	for size in 16 22 24 48; do \
 		install -d ~/.local/share/icons/hicolor/$${size}x$${size}/apps; \
 		install -m 644 $(ICON_SRC_DIR)/$${size}x$${size}/apps/ailater-im.png ~/.local/share/icons/hicolor/$${size}x$${size}/apps/org.fcitx.Fcitx5.ailater-im.png; \
+		ln -sf org.fcitx.Fcitx5.ailater-im.png ~/.local/share/icons/hicolor/$${size}x$${size}/apps/fcitx-ailater-im.png; \
 	done
 	install -d ~/.local/share/icons/hicolor/scalable/apps
 	install -m 644 $(ICON_SRC_DIR)/scalable/apps/ailater-im.svg ~/.local/share/icons/hicolor/scalable/apps/org.fcitx.Fcitx5.ailater-im.svg
+	ln -sf org.fcitx.Fcitx5.ailater-im.svg ~/.local/share/icons/hicolor/scalable/apps/fcitx-ailater-im.svg
 	@echo "Installing tray icons..."
 	for size in 16 22 24; do \
 		install -d ~/.local/share/icons/hicolor/$${size}x$${size}/status; \
 		install -d ~/.local/share/icons/hicolor/$${size}x$${size}/panel; \
-		install -m 644 $(ICON_SRC_DIR)/status/$${size}/fcitx-ailater-im.svg ~/.local/share/icons/hicolor/$${size}x$${size}/status/ailater-im.svg; \
-		install -m 644 $(ICON_SRC_DIR)/status/$${size}/fcitx-ailater-im-dark.svg ~/.local/share/icons/hicolor/$${size}x$${size}/status/ailater-im-dark.svg; \
-		install -m 644 $(ICON_SRC_DIR)/panel/$${size}/fcitx-ailater-im.svg ~/.local/share/icons/hicolor/$${size}x$${size}/panel/ailater-im.svg; \
-		install -m 644 $(ICON_SRC_DIR)/panel/$${size}/fcitx-ailater-im-dark.svg ~/.local/share/icons/hicolor/$${size}x$${size}/panel/ailater-im-dark.svg; \
+		install -m 644 $(ICON_SRC_DIR)/status/$${size}/fcitx-ailater-im.svg ~/.local/share/icons/hicolor/$${size}x$${size}/status/fcitx-ailater-im.svg; \
+		install -m 644 $(ICON_SRC_DIR)/status/$${size}/fcitx-ailater-im-dark.svg ~/.local/share/icons/hicolor/$${size}x$${size}/status/fcitx-ailater-im-dark.svg; \
+		install -m 644 $(ICON_SRC_DIR)/panel/$${size}/fcitx-ailater-im.svg ~/.local/share/icons/hicolor/$${size}x$${size}/panel/fcitx-ailater-im.svg; \
+		install -m 644 $(ICON_SRC_DIR)/panel/$${size}/fcitx-ailater-im-dark.svg ~/.local/share/icons/hicolor/$${size}x$${size}/panel/fcitx-ailater-im-dark.svg; \
+		ln -sf fcitx-ailater-im.svg ~/.local/share/icons/hicolor/$${size}x$${size}/status/ailater-im.svg; \
+		ln -sf fcitx-ailater-im-dark.svg ~/.local/share/icons/hicolor/$${size}x$${size}/status/ailater-im-dark.svg; \
+		ln -sf fcitx-ailater-im.svg ~/.local/share/icons/hicolor/$${size}x$${size}/panel/ailater-im.svg; \
+		ln -sf fcitx-ailater-im-dark.svg ~/.local/share/icons/hicolor/$${size}x$${size}/panel/ailater-im-dark.svg; \
 	done
 	@echo "Installing desktop entry..."
 	install -d ~/.local/share/applications
