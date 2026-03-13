@@ -31,6 +31,12 @@ pub struct InputState {
     pub is_active: bool,
     /// Text to be committed (cleared after being read)
     pub commit_text: String,
+    /// Composed text in step-by-step mode (characters selected but not yet committed)
+    /// 当用户逐字选择时，已选的字符会存在这里
+    pub composed_text: String,
+    /// Number of syllables already consumed in step-by-step mode
+    /// 追踪已消耗的音节数量
+    pub syllables_consumed: usize,
 }
 
 impl Default for InputState {
@@ -44,6 +50,8 @@ impl Default for InputState {
             context: String::new(),
             is_active: false,
             commit_text: String::new(),
+            composed_text: String::new(),
+            syllables_consumed: 0,
         }
     }
 }
@@ -59,6 +67,11 @@ pub struct Candidate {
     pub score: f32,
     /// Source of this candidate
     pub source: PredictionSource,
+    /// Number of syllables this candidate consumes from the input
+    /// 这个候选消耗了多少个音节（用于逐步输入模式）
+    /// 例如：输入 "maomaoyu"，候选 "毛" 消耗 1 个音节 "mao"
+    /// 候选 "毛毛" 消耗 2 个音节 "maomao"
+    pub syllable_count: usize,
 }
 
 /// The main input method engine
@@ -221,15 +234,47 @@ impl InputEngine {
     }
 
     /// Handle backspace
+    /// 
+    /// 在逐步输入模式下：
+    /// - 如果 preedit 为空但有 composed_text，删除最后一个已选字符
+    /// - 否则正常删除拼音
     fn handle_backspace(&self, state: &mut InputState) -> IMReturnValue {
-        if !state.is_active || state.preedit.is_empty() {
+        if !state.is_active {
+            return IMReturnValue::Forward;
+        }
+
+        // 逐步输入模式：优先删除已选字符
+        if state.preedit.is_empty() && !state.composed_text.is_empty() {
+            // 删除最后一个已选字符
+            let chars: Vec<char> = state.composed_text.chars().collect();
+            if chars.len() > 1 {
+                state.composed_text = chars[..chars.len() - 1].iter().collect();
+                state.syllables_consumed = state.syllables_consumed.saturating_sub(1);
+                // 需要重新生成 preedit 和 candidates
+                // 这里需要保存原始拼音，但目前没有保存
+                // 暂时简单处理：清空 composed_text 并结束
+                state.composed_text.clear();
+                state.syllables_consumed = 0;
+                state.candidates.clear();
+                state.is_active = false;
+            } else {
+                // 只剩一个字符，直接清空
+                state.composed_text.clear();
+                state.syllables_consumed = 0;
+                state.candidates.clear();
+                state.is_active = false;
+            }
+            return IMReturnValue::Consume;
+        }
+
+        if state.preedit.is_empty() {
             return IMReturnValue::Forward;
         }
 
         state.preedit.pop();
         state.cursor_pos = state.preedit.len();
 
-        if state.preedit.is_empty() {
+        if state.preedit.is_empty() && state.composed_text.is_empty() {
             state.is_active = false;
             state.candidates.clear();
         } else {
@@ -239,18 +284,33 @@ impl InputEngine {
         IMReturnValue::Consume
     }
 
-    /// Handle return key - commit raw pinyin (English)
+    /// Handle return key - commit raw pinyin (English) or composed text
     fn handle_return(&self, state: &mut InputState) -> IMReturnValue {
-        if !state.is_active || state.preedit.is_empty() {
+        if !state.is_active {
             return IMReturnValue::Forward;
         }
 
-        // Always commit raw pinyin (English) on Enter
-        state.commit_text = state.preedit.clone();
-        state.context.push_str(&state.preedit);
+        // 在逐步输入模式下，上屏已选字符 + 剩余拼音
+        if !state.composed_text.is_empty() {
+            if state.preedit.is_empty() {
+                // 只有已选字符，直接上屏
+                state.commit_text = state.composed_text.clone();
+            } else {
+                // 有已选字符和剩余拼音，上屏已选字符+剩余拼音（作为英文）
+                state.commit_text = format!("{}{}", state.composed_text, state.preedit);
+            }
+            state.context.push_str(&state.commit_text);
+        } else if !state.preedit.is_empty() {
+            // 正常模式：上屏原始拼音
+            state.commit_text = state.preedit.clone();
+            state.context.push_str(&state.preedit);
+        }
+
         state.preedit.clear();
         state.candidates.clear();
         state.is_active = false;
+        state.composed_text.clear();
+        state.syllables_consumed = 0;
 
         IMReturnValue::Consume
     }
@@ -264,6 +324,9 @@ impl InputEngine {
         state.preedit.clear();
         state.candidates.clear();
         state.is_active = false;
+        // 清除逐步输入模式的缓存
+        state.composed_text.clear();
+        state.syllables_consumed = 0;
 
         IMReturnValue::Consume
     }
@@ -398,11 +461,14 @@ impl InputEngine {
             if state.candidates.is_empty() {
                 let pinyin_chars = get_candidates(&syllables[0]);
                 for (idx, &ch) in pinyin_chars.iter().enumerate() {
+                    // 使用 saturating_sub 避免溢出，并确保分数不小于 1
+                    let score = 100usize.saturating_sub(idx * 10).max(1) as f32;
                     state.candidates.push(Candidate {
                         text: ch.to_string(),
                         pinyin: syllables[0].clone(),
-                        score: (100 - idx * 10) as f32,
+                        score,
                         source: PredictionSource::Dictionary,
+                        syllable_count: 1, // 单字消耗1个音节
                     });
                 }
             }
@@ -470,12 +536,14 @@ impl InputEngine {
             // Try to find this phrase in dictionary
             let entries = self.dictionary.lookup(&pinyin_str);
             let has_entries = !entries.is_empty();
+            let syllable_count = pinyin_combo.len();
             for entry in &entries {
                 state.candidates.push(Candidate {
                     text: entry.word.clone(),
                     pinyin: entry.pinyin.clone(),
                     score: entry.frequency as f32 / 100.0 + 0.5, // Boost score for exact match
                     source: PredictionSource::Dictionary,
+                    syllable_count, // 根据拼音组合长度设置
                 });
             }
 
@@ -494,6 +562,7 @@ impl InputEngine {
                             score: (e1.frequency + e2.frequency) as f32 / 200.0
                                 - (i + j) as f32 * 0.1,
                             source: PredictionSource::Dictionary,
+                            syllable_count: 2, // 两个字的组合消耗2个音节
                         });
                     }
                 }
@@ -506,11 +575,14 @@ impl InputEngine {
         let entries = self.dictionary.lookup(pinyin);
 
         for entry in entries {
+            // 根据候选字的字符数确定音节数（一个汉字通常对应一个音节）
+            let syllable_count = entry.word.chars().count();
             state.candidates.push(Candidate {
                 text: entry.word,
                 pinyin: entry.pinyin,
                 score: entry.frequency as f32 / 100.0,
                 source: PredictionSource::Dictionary,
+                syllable_count,
             });
         }
     }
@@ -531,11 +603,14 @@ impl InputEngine {
                     continue;
                 }
 
+                // 根据候选字的字符数确定音节数
+                let syllable_count = entry.word.chars().count();
                 state.candidates.push(Candidate {
                     text: entry.word,
                     pinyin: entry.pinyin,
                     score: (entry.frequency as f32 / 100.0) * 0.1, // Significantly lower score for fuzzy matches
                     source: PredictionSource::FuzzyMatch,
+                    syllable_count,
                 });
             }
         }
@@ -555,18 +630,21 @@ impl InputEngine {
             pinyin_with_spaces,
             entries.len()
         );
+        let total_syllables = syllables.len();
         for entry in &entries {
             // Check if already in candidates from combinations
             if let Some(existing) = state.candidates.iter_mut().find(|c| c.text == entry.word) {
                 // Update score to highest priority
                 existing.score = 100.0 + entry.frequency as f32 / 100.0;
                 existing.source = PredictionSource::Dictionary;
+                existing.syllable_count = total_syllables;
             } else {
                 state.candidates.push(Candidate {
                     text: entry.word.clone(),
                     pinyin: entry.pinyin.clone(),
                     score: 100.0 + entry.frequency as f32 / 100.0,
                     source: PredictionSource::Dictionary,
+                    syllable_count: total_syllables, // 完整短语消耗所有音节
                 });
             }
         }
@@ -585,6 +663,7 @@ impl InputEngine {
                 if dict_score > existing.score {
                     existing.score = dict_score;
                     existing.source = PredictionSource::Dictionary;
+                    existing.syllable_count = total_syllables;
                 }
             } else {
                 state.candidates.push(Candidate {
@@ -592,6 +671,7 @@ impl InputEngine {
                     pinyin: entry.pinyin,
                     score: 100.0 + entry.frequency as f32 / 100.0,
                     source: PredictionSource::Dictionary,
+                    syllable_count: total_syllables, // 完整短语消耗所有音节
                 });
             }
         }
@@ -626,6 +706,7 @@ impl InputEngine {
                         pinyin: entry.pinyin.clone(),
                         score: syllable_priority + char_priority + entry.frequency as f32 / 200.0,
                         source: PredictionSource::Dictionary,
+                        syllable_count: 1, // 单字消耗1个音节
                     });
                 }
             }
@@ -728,11 +809,14 @@ impl InputEngine {
         // Add combinations as candidates (skip if already exists from dictionary)
         for (text, score) in combinations.into_iter().take(10) {
             if !state.candidates.iter().any(|c| c.text == text) {
+                // 组合候选的音节数等于组合的字符数
+                let syllable_count = text.chars().count();
                 state.candidates.push(Candidate {
                     text,
                     pinyin: syllables.join(""),
                     score: 50.0 + score, // Medium priority: higher than single chars, lower than complete phrases
                     source: PredictionSource::Dictionary,
+                    syllable_count,
                 });
             }
         }
@@ -763,40 +847,124 @@ impl InputEngine {
                 continue;
             }
 
+            // AI 预测候选的音节数根据候选文字的字符数设置
+            let syllable_count = pred.text.chars().count();
             state.candidates.push(Candidate {
                 text: pred.text,
                 pinyin: state.preedit.clone(),
                 score: pred.confidence * 0.9, // AI predictions get high score
                 source: pred.source,
+                syllable_count,
             });
         }
     }
 
     /// Commit a candidate
+    /// 
+    /// 支持逐步输入模式：
+    /// - 如果候选只消耗部分音节，则保留剩余拼音继续输入
+    /// - 如果候选消耗所有音节，则上屏文字
     fn commit_candidate(&self, state: &mut InputState, candidate: &Candidate) {
         // Update dictionary frequency
         self.dictionary
             .update_frequency(&candidate.pinyin, &candidate.text);
 
-        // Set commit text for C++ to retrieve
-        state.commit_text = candidate.text.clone();
+        // 解析当前 preedit 为音节列表
+        let syllables = self.pinyin_parser.parse(&state.preedit);
+        let total_syllables = syllables.len();
+        
+        log::debug!(
+            "commit_candidate: text={}, syllable_count={}, total_syllables={}, syllables_consumed={}, composed_text='{}'",
+            candidate.text,
+            candidate.syllable_count,
+            total_syllables,
+            state.syllables_consumed,
+            state.composed_text
+        );
 
-        // Update context
-        state.context.push_str(&candidate.text);
+        // 检查是否是逐步输入模式（候选只消耗部分音节）
+        // 注意：state.syllables_consumed 记录的是之前已消耗的音节数
+        let consumed_before = state.syllables_consumed;
+        let will_consume = candidate.syllable_count;
+        let will_remain = total_syllables.saturating_sub(consumed_before + will_consume);
 
-        // Limit context length by characters (not bytes)
-        const MAX_CONTEXT_CHARS: usize = 100;
-        let current_chars = state.context.chars().count();
-        if current_chars > MAX_CONTEXT_CHARS {
-            // Truncate to MAX_CONTEXT_CHARS safely
-            let truncated: String = state.context.chars().take(MAX_CONTEXT_CHARS).collect();
-            state.context = truncated;
+        if will_remain > 0 {
+            // === 逐步输入模式：候选只消耗部分音节 ===
+            
+            // 将候选文字添加到 composed_text
+            state.composed_text.push_str(&candidate.text);
+            state.syllables_consumed += will_consume;
+            
+            log::debug!(
+                "Step-by-step mode: composed_text='{}', syllables_consumed={}",
+                state.composed_text,
+                state.syllables_consumed
+            );
+            
+            // 从 preedit 中移除已消耗的拼音
+            // 计算需要移除的拼音长度
+            let mut chars_to_remove = 0;
+            for (idx, syl) in syllables.iter().enumerate() {
+                if idx < consumed_before + will_consume {
+                    chars_to_remove += syl.len();
+                }
+            }
+            
+            // 移除已消耗的拼音
+            if chars_to_remove > 0 && chars_to_remove <= state.preedit.len() {
+                state.preedit = state.preedit[chars_to_remove..].to_string();
+            }
+            
+            // 重置候选选择状态
+            state.current_page = 0;
+            state.selected_index = 0;
+            
+            // 继续更新候选列表
+            if !state.preedit.is_empty() {
+                self.update_candidates(state);
+            } else {
+                // 如果 preedit 为空但还有 composed_text，直接上屏
+                state.commit_text = state.composed_text.clone();
+                state.context.push_str(&state.commit_text);
+                state.composed_text.clear();
+                state.syllables_consumed = 0;
+                state.candidates.clear();
+                state.is_active = false;
+            }
+        } else {
+            // === 完整上屏模式：候选消耗所有剩余音节 ===
+            
+            // 组合 composed_text 和当前候选
+            let final_text = if state.composed_text.is_empty() {
+                candidate.text.clone()
+            } else {
+                format!("{}{}", state.composed_text, candidate.text)
+            };
+            
+            // Set commit text for C++ to retrieve
+            state.commit_text = final_text;
+
+            // Update context
+            state.context.push_str(&state.commit_text);
+
+            // Limit context length by characters (not bytes)
+            const MAX_CONTEXT_CHARS: usize = 100;
+            let current_chars = state.context.chars().count();
+            if current_chars > MAX_CONTEXT_CHARS {
+                // Truncate to MAX_CONTEXT_CHARS safely
+                let truncated: String = state.context.chars().take(MAX_CONTEXT_CHARS).collect();
+                state.context = truncated;
+            }
+
+            // Clear all state
+            state.preedit.clear();
+            state.candidates.clear();
+            state.is_active = false;
+            state.composed_text.clear();
+            state.syllables_consumed = 0;
+            
+            log::debug!("Commit mode: final_text='{}'", state.commit_text);
         }
-
-        // Clear preedit
-        state.preedit.clear();
-        state.candidates.clear();
-        state.is_active = false;
 
         // Save user dictionary periodically (every 5 commits)
         let count = self.commit_counter.fetch_add(1, Ordering::SeqCst) + 1;
@@ -809,9 +977,23 @@ impl InputEngine {
     }
 
     /// Get current preedit text
+    /// 
+    /// 在逐步输入模式下，显示格式为：已选字符 + 剩余拼音
+    /// 例如：输入 "maomaoyu"，选择 "毛" 后，显示 "毛 maoyu"
     pub fn get_preedit(&self, ic: *mut FcitxInputContext) -> String {
         let state = self.get_state(ic);
-        state.preedit.clone()
+        
+        if state.composed_text.is_empty() {
+            // 正常模式：只显示拼音
+            state.preedit.clone()
+        } else {
+            // 逐步输入模式：显示已选字符 + 剩余拼音
+            if state.preedit.is_empty() {
+                state.composed_text.clone()
+            } else {
+                format!("{} {}", state.composed_text, state.preedit)
+            }
+        }
     }
 
     /// Get all candidates
@@ -858,7 +1040,10 @@ impl InputEngine {
 
     /// Reset input state
     pub fn reset(&self, ic: *mut FcitxInputContext) {
-        let state = InputState::default();
+        let mut state = InputState::default();
+        // 保留 context，清除其他状态
+        let old_state = self.get_state(ic);
+        state.context = old_state.context;
         self.update_state(ic, state);
     }
 
@@ -875,6 +1060,8 @@ impl InputEngine {
         state.preedit.clear();
         state.candidates.clear();
         state.is_active = false;
+        state.composed_text.clear();
+        state.syllables_consumed = 0;
         self.update_state(ic, state);
     }
 
