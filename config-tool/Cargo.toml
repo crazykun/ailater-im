@@ -1,16 +1,28 @@
 [package]
 name = "ailater-config"
-version = "0.1.0"
-edition = "2021"
+version = { workspace = true }
+edition = { workspace = true }
+authors = { workspace = true }
+license = { workspace = true }
+description = "Configuration tool for ailater-im input method"
 
 [[bin]]
 name = "ailater-config"
 path = "src/main.rs"
 
 [dependencies]
+# Use the main library's configuration types
+ailater-im = { path = "..", default-features = false }
+
+# GUI framework
 eframe = "0.27"
 egui = "0.27"
-serde = { version = "1.0", features = ["derive"] }
-toml = "0.8"
-dirs = "5.0"
+
+# Shared workspace dependencies
+serde = { workspace = true }
+toml = { workspace = true }
+directories = { workspace = true }
+
+# File dialogs and open utilities
 rfd = "0.14"
+open = "5.0"

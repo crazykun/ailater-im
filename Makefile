@@ -121,10 +121,10 @@ clean:
 	cd $(CONFIG_TOOL_DIR) && cargo clean 2>/dev/null || true
 
 test:
-	cargo test --all-features
+	cargo test --workspace --all-features
 
 doc:
-	cargo doc --no-deps --all-features
+	cargo doc --workspace --no-deps --all-features
 
 # Development targets
 dev:
@@ -142,14 +142,20 @@ release:
 
 # Check code without building
 check:
+	cargo check --workspace --all-features
+
+check-lib:
 	cargo check --all-features
 
 # Format code
 fmt:
-	cargo fmt
+	cargo fmt --all
 
 # Run linter
 lint:
+	cargo clippy --workspace --all-features -- -D warnings
+
+lint-lib:
 	cargo clippy --all-features -- -D warnings
 
 # Install to user directory
@@ -164,6 +170,7 @@ install-user: build
 	install -m 644 conf/inputmethod/ailater-im.conf ~/.local/share/fcitx5/inputmethod/
 	install -m 644 data/system.dict ~/.local/share/ailater-im/dict/
 	install -m 644 data/config.toml ~/.local/share/ailater-im/
+	install -m 755 $(CONFIG_TOOL_DIR)/target/release/ailater-config ~/.local/bin/ailater-config 2>/dev/null || true
 	@echo "Installing app icons..."
 	for size in 16 22 24 48; do \
 		install -d ~/.local/share/icons/hicolor/$${size}x$${size}/apps; \
@@ -180,6 +187,9 @@ install-user: build
 		install -m 644 $(ICON_SRC_DIR)/panel/$${size}/fcitx-ailater-im.svg ~/.local/share/icons/hicolor/$${size}x$${size}/panel/ailater-im.svg; \
 		install -m 644 $(ICON_SRC_DIR)/panel/$${size}/fcitx-ailater-im-dark.svg ~/.local/share/icons/hicolor/$${size}x$${size}/panel/ailater-im-dark.svg; \
 	done
+	@echo "Installing desktop entry..."
+	install -d ~/.local/share/applications
+	install -m 644 $(CONFIG_TOOL_DIR)/ailater-config.desktop ~/.local/share/applications/ 2>/dev/null || true
 	@echo "Updating icon cache..."
 	gtk-update-icon-cache ~/.local/share/icons/hicolor 2>/dev/null || true
 
@@ -189,6 +199,8 @@ uninstall-user:
 	rm -f ~/.local/lib/x86_64-linux-gnu/fcitx5/libailater_im.so
 	rm -f ~/.local/share/fcitx5/addon/ailater-im.conf
 	rm -f ~/.local/share/fcitx5/inputmethod/ailater-im.conf
+	rm -f ~/.local/bin/ailater-config
+	rm -f ~/.local/share/applications/ailater-config.desktop
 	rm -rf ~/.local/share/ailater-im
 	@echo "Removing icons..."
 	for size in 16 22 24 48; do \
@@ -210,35 +222,45 @@ uninstall-user:
 
 # Create distribution archive
 dist: release
+	@$(MAKE) -C $(CONFIG_TOOL_DIR) release 2>/dev/null || true
 	mkdir -p dist
 	cp target/release/libailater_im.so dist/
+	cp $(CONFIG_TOOL_DIR)/target/release/ailater-config dist/ 2>/dev/null || true
 	cp conf/ailater-im.conf dist/
+	cp conf/inputmethod/ailater-im.conf dist/
 	cp data/system.dict dist/
 	cp data/config.toml dist/
 	tar -czvf ailater-im-$(shell date +%Y%m%d).tar.gz dist/
 	rm -rf dist
 
 help:
-	@echo "ailater-im Makefile"
+	@echo "ailater-im Makefile (Cargo Workspace)"
 	@echo ""
 	@echo "Targets:"
 	@echo "  all          - Build the project (default)"
-	@echo "  build        - Build the project"
+	@echo "  build        - Build the main library"
+	@echo "  config-tool  - Build the configuration tool"
 	@echo "  install      - Install to system (requires root)"
 	@echo "  install-user - Install to user directory"
 	@echo "  uninstall    - Remove from system"
 	@echo "  uninstall-user - Remove from user directory"
 	@echo "  clean        - Clean build artifacts"
-	@echo "  test         - Run tests"
-	@echo "  doc          - Generate documentation"
+	@echo "  test         - Run all tests (workspace)"
+	@echo "  doc          - Generate documentation (workspace)"
 	@echo "  dev          - Development build"
 	@echo "  release      - Optimized release build"
-	@echo "  check        - Check code without building"
-	@echo "  fmt          - Format code"
-	@echo "  lint         - Run clippy linter"
+	@echo "  check        - Check code without building (workspace)"
+	@echo "  fmt          - Format code (all)"
+	@echo "  lint         - Run clippy linter (workspace)"
 	@echo "  dist         - Create distribution archive"
 	@echo ""
 	@echo "Variables:"
 	@echo "  PREFIX       - Installation prefix (default: /usr)"
 	@echo "  FEATURES     - Cargo features (default: remote-model)"
 	@echo "  TARGET       - Build target (default: release)"
+	@echo ""
+	@echo "Workspace Commands:"
+	@echo "  cargo build --workspace              - Build all members"
+	@echo "  cargo build -p ailater-im            - Build only main library"
+	@echo "  cargo build -p ailater-config        - Build only config tool"
+	@echo "  cargo test --workspace --all-features - Test all members"
