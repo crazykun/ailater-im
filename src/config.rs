@@ -149,10 +149,10 @@ fn default_max_preedit() -> usize {
     64
 }
 fn default_num_candidates() -> usize {
-    30
+    45
 }
 fn default_page_size() -> usize {
-    5
+    9
 }
 fn default_min_ai_input() -> usize {
     2

@@ -301,6 +301,17 @@ pub extern "C" fn ailater_engine_get_selected_index(engine: *mut c_void, ic: *mu
     engine.get_selected_index(ic)
 }
 
+/// Get the page size configured in the engine
+#[no_mangle]
+pub extern "C" fn ailater_engine_get_page_size(engine: *mut c_void) -> usize {
+    if engine.is_null() {
+        return 5; // default page size
+    }
+
+    let engine = unsafe { &*(engine as *const InputEngine) };
+    engine.get_page_size()
+}
+
 /// Get candidate at specific index (0-based)
 ///
 /// Returns the candidate text as a C string, or NULL if index is invalid.

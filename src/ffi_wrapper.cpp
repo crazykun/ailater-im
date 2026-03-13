@@ -32,6 +32,7 @@ extern "C" {
     size_t ailater_engine_get_candidate_count(void* engine, void* ic);
     size_t ailater_engine_get_current_page(void* engine, void* ic);
     size_t ailater_engine_get_selected_index(void* engine, void* ic);
+    size_t ailater_engine_get_page_size(void* engine);
     void ailater_engine_free_string(char* s);
 }
 
@@ -118,7 +119,7 @@ public:
         // Handle paging keys when we have candidates
         // Up/Down for page navigation, Left/Right are passed to Rust for candidate selection
         if (hasCandidates) {
-            int pageSize = instance_->globalConfig().defaultPageSize();
+            size_t pageSize = ailater_engine_get_page_size(engine_);
             size_t currentPage = ailater_engine_get_current_page(engine_, ic);
             size_t maxPage = (candidateCount - 1) / pageSize;
 
@@ -188,7 +189,7 @@ public:
         // Get all candidates from Rust
         const char** candidates = ailater_engine_get_candidates(engine_, ic);
         if (candidates && *candidates) {
-            int pageSize = instance_->globalConfig().defaultPageSize();
+            size_t pageSize = ailater_engine_get_page_size(engine_);
             size_t currentPage = ailater_engine_get_current_page(engine_, ic);
 
             // Count total candidates
@@ -198,11 +199,11 @@ public:
             }
 
             // Calculate start and end indices for current page
-            int startIndex = static_cast<int>(currentPage * pageSize);
-            int endIndex = std::min(startIndex + pageSize, totalCandidates);
+            size_t startIndex = currentPage * pageSize;
+            size_t endIndex = std::min(startIndex + pageSize, static_cast<size_t>(totalCandidates));
 
             // Clamp current page to valid range
-            if (startIndex >= totalCandidates && totalCandidates > 0) {
+            if (startIndex >= static_cast<size_t>(totalCandidates) && totalCandidates > 0) {
                 // Current page is out of bounds, this shouldn't happen
                 // But protect against it by not showing candidates
                 FCITX_WARN() << "Current page out of bounds: page=" << currentPage 
@@ -210,21 +211,21 @@ public:
             }
 
             // Only create candidate list if current page has candidates
-            if (startIndex < totalCandidates) {
+            if (startIndex < static_cast<size_t>(totalCandidates)) {
                 auto candidateList = std::make_unique<CommonCandidateList>();
-                candidateList->setPageSize(pageSize);
+                candidateList->setPageSize(static_cast<int>(pageSize));
 
                 // Set labels to 1-pageSize
                 std::vector<std::string> labels;
-                for (int i = 0; i < pageSize && i < 9; i++) {
+                for (size_t i = 0; i < pageSize && i < 9; i++) {
                     labels.push_back(std::to_string(i + 1));
                 }
                 candidateList->setLabels(labels);
 
                 // Add only candidates for current page
-                for (int i = startIndex; i < endIndex; i++) {
+                for (size_t i = startIndex; i < endIndex; i++) {
                     // Index within current page (0-based)
-                    int indexInPage = i - startIndex;
+                    int indexInPage = static_cast<int>(i - startIndex);
                     auto candidateWord = std::make_unique<AilaterCandidateWord>(
                         candidates[i], indexInPage, engine_, ic
                     );

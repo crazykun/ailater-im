@@ -329,7 +329,7 @@ impl InputEngine {
             // At the beginning of current page, go to previous page's last item
             if state.current_page > 0 {
                 state.current_page -= 1;
-                state.selected_index = self.get_page_size(state) - 1;
+                state.selected_index = self.get_current_page_size(state) - 1;
             }
         }
 
@@ -342,7 +342,7 @@ impl InputEngine {
             return IMReturnValue::Forward;
         }
 
-        let page_size = self.get_page_size(state);
+        let page_size = self.get_current_page_size(state);
         if state.selected_index < page_size - 1 {
             // Check if there's a candidate at the next position
             let page_start = state.current_page * self.config.input.page_size;
@@ -362,8 +362,8 @@ impl InputEngine {
         IMReturnValue::Consume
     }
 
-    /// Get actual page size for current page
-    fn get_page_size(&self, state: &InputState) -> usize {
+    /// Get actual page size for current page (may be less on last page)
+    fn get_current_page_size(&self, state: &InputState) -> usize {
         let page_start = state.current_page * self.config.input.page_size;
         let remaining = state.candidates.len().saturating_sub(page_start);
         remaining.min(self.config.input.page_size)
@@ -881,6 +881,11 @@ impl InputEngine {
     /// Check if the AI model is available
     pub fn is_model_available(&self) -> bool {
         self.model.is_available()
+    }
+
+    /// Get the configured page size
+    pub fn get_page_size(&self) -> usize {
+        self.config.input.page_size
     }
 }
 
