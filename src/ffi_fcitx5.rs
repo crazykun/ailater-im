@@ -288,6 +288,19 @@ pub extern "C" fn ailater_engine_get_current_page(engine: *mut c_void, ic: *mut 
     engine.get_current_page(ic)
 }
 
+/// Get the selected candidate index within current page
+#[no_mangle]
+pub extern "C" fn ailater_engine_get_selected_index(engine: *mut c_void, ic: *mut c_void) -> usize {
+    if engine.is_null() {
+        return 0;
+    }
+
+    let engine = unsafe { &*(engine as *const InputEngine) };
+    let ic = ic as *mut FcitxInputContext;
+
+    engine.get_selected_index(ic)
+}
+
 /// Get candidate at specific index (0-based)
 ///
 /// Returns the candidate text as a C string, or NULL if index is invalid.

@@ -23,6 +23,8 @@ pub struct InputState {
     pub candidates: Vec<Candidate>,
     /// Current candidate page
     pub current_page: usize,
+    /// Currently selected candidate index within current page
+    pub selected_index: usize,
     /// Committed text (context for AI)
     pub context: String,
     /// Is the input method active
@@ -38,6 +40,7 @@ impl Default for InputState {
             cursor_pos: 0,
             candidates: Vec::new(),
             current_page: 0,
+            selected_index: 0,
             context: String::new(),
             is_active: false,
             commit_text: String::new(),
@@ -131,8 +134,8 @@ impl InputEngine {
         }
 
         // Handle different key types
-        // Note: Arrow keys and PageUp/PageDown are forwarded to fcitx5's
-        // CommonCandidateList for standard paging behavior
+        // Left/Right: switch selected candidate
+        // Up/Down: page up/down
         let result = match key {
             KeySym::BackSpace => self.handle_backspace(&mut input_state),
             KeySym::Return => self.handle_return(&mut input_state),
@@ -141,6 +144,10 @@ impl InputEngine {
             KeySym::Minus => self.handle_page_up(&mut input_state),
             KeySym::Equal => self.handle_page_down(&mut input_state),
             KeySym::Plus => self.handle_page_down(&mut input_state),
+            KeySym::Left => self.handle_left(&mut input_state),
+            KeySym::Right => self.handle_right(&mut input_state),
+            KeySym::Up => self.handle_page_up(&mut input_state),
+            KeySym::Down => self.handle_page_down(&mut input_state),
             _ => {
                 // Handle letter keys for pinyin input
                 if key.is_letter(keysym) {
@@ -261,13 +268,20 @@ impl InputEngine {
         IMReturnValue::Consume
     }
 
-    /// Handle space key (commit first candidate)
+    /// Handle space key (commit selected candidate)
     fn handle_space(&self, state: &mut InputState) -> IMReturnValue {
         if !state.is_active || state.preedit.is_empty() {
             return IMReturnValue::Forward;
         }
 
-        if let Some(candidate) = state.candidates.first().cloned() {
+        // Commit the currently selected candidate
+        let page_start = state.current_page * self.config.input.page_size;
+        let candidate_idx = page_start + state.selected_index;
+
+        if let Some(candidate) = state.candidates.get(candidate_idx).cloned() {
+            self.commit_candidate(state, &candidate);
+        } else if let Some(candidate) = state.candidates.first().cloned() {
+            // Fallback to first candidate
             self.commit_candidate(state, &candidate);
         }
 
@@ -282,6 +296,7 @@ impl InputEngine {
 
         if state.current_page > 0 {
             state.current_page -= 1;
+            state.selected_index = 0; // Reset selection when changing page
         }
 
         IMReturnValue::Consume
@@ -296,15 +311,69 @@ impl InputEngine {
         let max_page = (state.candidates.len() - 1) / self.config.input.page_size;
         if state.current_page < max_page {
             state.current_page += 1;
+            state.selected_index = 0; // Reset selection when changing page
         }
 
         IMReturnValue::Consume
+    }
+
+    /// Handle left arrow key - select previous candidate
+    fn handle_left(&self, state: &mut InputState) -> IMReturnValue {
+        if !state.is_active || state.candidates.is_empty() {
+            return IMReturnValue::Forward;
+        }
+
+        if state.selected_index > 0 {
+            state.selected_index -= 1;
+        } else {
+            // At the beginning of current page, go to previous page's last item
+            if state.current_page > 0 {
+                state.current_page -= 1;
+                state.selected_index = self.get_page_size(state) - 1;
+            }
+        }
+
+        IMReturnValue::Consume
+    }
+
+    /// Handle right arrow key - select next candidate
+    fn handle_right(&self, state: &mut InputState) -> IMReturnValue {
+        if !state.is_active || state.candidates.is_empty() {
+            return IMReturnValue::Forward;
+        }
+
+        let page_size = self.get_page_size(state);
+        if state.selected_index < page_size - 1 {
+            // Check if there's a candidate at the next position
+            let page_start = state.current_page * self.config.input.page_size;
+            let next_idx = page_start + state.selected_index + 1;
+            if next_idx < state.candidates.len() {
+                state.selected_index += 1;
+            }
+        } else {
+            // At the end of current page, go to next page's first item
+            let max_page = (state.candidates.len() - 1) / self.config.input.page_size;
+            if state.current_page < max_page {
+                state.current_page += 1;
+                state.selected_index = 0;
+            }
+        }
+
+        IMReturnValue::Consume
+    }
+
+    /// Get actual page size for current page
+    fn get_page_size(&self, state: &InputState) -> usize {
+        let page_start = state.current_page * self.config.input.page_size;
+        let remaining = state.candidates.len().saturating_sub(page_start);
+        remaining.min(self.config.input.page_size)
     }
 
     /// Update candidate list based on current preedit
     fn update_candidates(&self, state: &mut InputState) {
         state.candidates.clear();
         state.current_page = 0;
+        state.selected_index = 0;
 
         if state.preedit.is_empty() {
             return;
@@ -476,21 +545,90 @@ impl InputEngine {
     fn add_phrase_candidates(&self, state: &mut InputState, syllables: &[String]) {
         // Simple phrase matching: combine single character candidates
         let pinyin_str = syllables.join("");
+        let pinyin_with_spaces = syllables.join(" ");
 
-        // Try to find the whole phrase in dictionary
-        let entries = self.dictionary.lookup(&pinyin_str);
-        for entry in entries {
-            state.candidates.push(Candidate {
-                text: entry.word,
-                pinyin: entry.pinyin,
-                score: entry.frequency as f32 / 100.0,
-                source: PredictionSource::Dictionary,
-            });
+        // Priority 1: Complete phrases from dictionary (highest priority)
+        // First try with spaces (user/system dictionary format)
+        let entries = self.dictionary.lookup(&pinyin_with_spaces);
+        log::debug!(
+            "Dictionary lookup '{}' found {} entries",
+            pinyin_with_spaces,
+            entries.len()
+        );
+        for entry in &entries {
+            // Check if already in candidates from combinations
+            if let Some(existing) = state.candidates.iter_mut().find(|c| c.text == entry.word) {
+                // Update score to highest priority
+                existing.score = 100.0 + entry.frequency as f32 / 100.0;
+                existing.source = PredictionSource::Dictionary;
+            } else {
+                state.candidates.push(Candidate {
+                    text: entry.word.clone(),
+                    pinyin: entry.pinyin.clone(),
+                    score: 100.0 + entry.frequency as f32 / 100.0,
+                    source: PredictionSource::Dictionary,
+                });
+            }
         }
 
-        // Also generate single-character combinations (always show these)
+        // Then try without spaces (for compatibility)
+        let entries_no_space = self.dictionary.lookup(&pinyin_str);
+        log::debug!(
+            "Dictionary lookup '{}' found {} entries",
+            pinyin_str,
+            entries_no_space.len()
+        );
+        for entry in entries_no_space {
+            // Check if already in candidates
+            if let Some(existing) = state.candidates.iter_mut().find(|c| c.text == entry.word) {
+                let dict_score = 100.0 + entry.frequency as f32 / 100.0;
+                if dict_score > existing.score {
+                    existing.score = dict_score;
+                    existing.source = PredictionSource::Dictionary;
+                }
+            } else {
+                state.candidates.push(Candidate {
+                    text: entry.word,
+                    pinyin: entry.pinyin,
+                    score: 100.0 + entry.frequency as f32 / 100.0,
+                    source: PredictionSource::Dictionary,
+                });
+            }
+        }
+
+        // Priority 2: Generate word combinations (medium priority, limited quantity)
         if syllables.len() >= 2 && syllables.len() <= 4 {
             self.generate_combinations(state, syllables);
+        }
+
+        // Priority 3: Single characters by syllable (in syllable order, limited quantity)
+        // Each syllable gets decreasing priority: first syllable = higher, second = lower, etc.
+        // This allows users to select characters one by one to build words
+        for (syllable_idx, syl) in syllables.iter().enumerate() {
+            let entries = self.dictionary.lookup(syl);
+            log::debug!(
+                "Dictionary lookup for single syllable '{}' found {} entries",
+                syl,
+                entries.len()
+            );
+
+            // Only take top 5 characters per syllable to avoid too many candidates
+            for (char_idx, entry) in entries.iter().take(5).enumerate() {
+                // Check if already in candidates (avoid duplicates)
+                if !state.candidates.iter().any(|c| c.text == entry.word) {
+                    // Decreasing priority for each subsequent syllable
+                    // First syllable: 30.0, second: 20.0, third: 10.0, fourth: 0.0
+                    let syllable_priority = 30.0 - (syllable_idx as f32 * 10.0);
+                    // Decreasing priority for characters within same syllable
+                    let char_priority = (5.0 - char_idx as f32) * 0.5;
+                    state.candidates.push(Candidate {
+                        text: entry.word.clone(),
+                        pinyin: entry.pinyin.clone(),
+                        score: syllable_priority + char_priority + entry.frequency as f32 / 200.0,
+                        source: PredictionSource::Dictionary,
+                    });
+                }
+            }
         }
     }
 
@@ -501,64 +639,85 @@ impl InputEngine {
             .iter()
             .map(|s| {
                 let entries = self.dictionary.lookup(s);
-                // Take top candidates with their frequencies
+                // If dictionary lookup returns empty, try built-in pinyin map
+                let entries = if entries.is_empty() {
+                    let built_in = get_candidates(s);
+                    built_in
+                        .iter()
+                        .take(10)
+                        .enumerate()
+                        .map(|(idx, &ch)| (ch.to_string(), (100 - idx as u64 * 10).max(1)))
+                        .collect::<Vec<_>>()
+                } else {
+                    // Take top candidates with their frequencies
+                    entries
+                        .iter()
+                        .take(10)
+                        .map(|e| (e.word.clone(), e.frequency))
+                        .collect::<Vec<_>>()
+                };
                 entries
-                    .iter()
-                    .take(10)
-                    .map(|e| (e.word.clone(), e.frequency))
-                    .collect::<Vec<_>>()
             })
             .collect();
 
-        // Check if we have candidates for all syllables
-        if all_candidates.iter().any(|c| c.is_empty()) {
-            return;
-        }
+        // Log for debugging
+        log::debug!(
+            "generate_combinations: syllables={:?}, candidates_per_syllable={:?}",
+            syllables,
+            all_candidates.iter().map(|c| c.len()).collect::<Vec<_>>()
+        );
 
         // Generate combinations with frequency-based scoring
         let mut combinations = Vec::new();
-        let max_per_syllable = 3;
+        let max_per_syllable = 2; // Reduced from 3 to limit combinations (2x2=4 instead of 3x3=9)
 
         // Simple cartesian product for small number of syllables
         if syllables.len() == 2 {
-            for i in 0..all_candidates[0].len().min(max_per_syllable) {
-                for j in 0..all_candidates[1].len().min(max_per_syllable) {
-                    let (word1, freq1) = &all_candidates[0][i];
-                    let (word2, freq2) = &all_candidates[1][j];
-                    let text = format!("{}{}", word1, word2);
-                    // Score based on combined frequency (normalized)
-                    let freq_score = (freq1 + freq2) as f32 / 1000.0;
-                    let pos_penalty = (i + j) as f32 * 0.05;
-                    combinations.push((text, freq_score - pos_penalty));
-                }
-            }
-        } else if syllables.len() == 3 {
-            for i in 0..all_candidates[0].len().min(max_per_syllable) {
-                for j in 0..all_candidates[1].len().min(max_per_syllable) {
-                    for k in 0..all_candidates[2].len().min(max_per_syllable) {
+            // Only generate if both syllables have candidates
+            if !all_candidates[0].is_empty() && !all_candidates[1].is_empty() {
+                for i in 0..all_candidates[0].len().min(max_per_syllable) {
+                    for j in 0..all_candidates[1].len().min(max_per_syllable) {
                         let (word1, freq1) = &all_candidates[0][i];
                         let (word2, freq2) = &all_candidates[1][j];
-                        let (word3, freq3) = &all_candidates[2][k];
-                        let text = format!("{}{}{}", word1, word2, word3);
-                        let freq_score = (freq1 + freq2 + freq3) as f32 / 1000.0;
-                        let pos_penalty = (i + j + k) as f32 * 0.04;
+                        let text = format!("{}{}", word1, word2);
+                        // Score based on combined frequency (normalized)
+                        let freq_score = (freq1 + freq2) as f32 / 1000.0;
+                        let pos_penalty = (i + j) as f32 * 0.05;
                         combinations.push((text, freq_score - pos_penalty));
                     }
                 }
             }
-        } else if syllables.len() == 4 {
-            for i in 0..all_candidates[0].len().min(2) {
-                for j in 0..all_candidates[1].len().min(2) {
-                    for k in 0..all_candidates[2].len().min(2) {
-                        for l in 0..all_candidates[3].len().min(2) {
+        } else if syllables.len() == 3 {
+            if all_candidates.iter().all(|c| !c.is_empty()) {
+                for i in 0..all_candidates[0].len().min(max_per_syllable) {
+                    for j in 0..all_candidates[1].len().min(max_per_syllable) {
+                        for k in 0..all_candidates[2].len().min(max_per_syllable) {
                             let (word1, freq1) = &all_candidates[0][i];
                             let (word2, freq2) = &all_candidates[1][j];
                             let (word3, freq3) = &all_candidates[2][k];
-                            let (word4, freq4) = &all_candidates[3][l];
-                            let text = format!("{}{}{}{}", word1, word2, word3, word4);
-                            let freq_score = (freq1 + freq2 + freq3 + freq4) as f32 / 1000.0;
-                            let pos_penalty = (i + j + k + l) as f32 * 0.03;
+                            let text = format!("{}{}{}", word1, word2, word3);
+                            let freq_score = (freq1 + freq2 + freq3) as f32 / 1000.0;
+                            let pos_penalty = (i + j + k) as f32 * 0.04;
                             combinations.push((text, freq_score - pos_penalty));
+                        }
+                    }
+                }
+            }
+        } else if syllables.len() == 4 {
+            if all_candidates.iter().all(|c| !c.is_empty()) {
+                for i in 0..all_candidates[0].len().min(2) {
+                    for j in 0..all_candidates[1].len().min(2) {
+                        for k in 0..all_candidates[2].len().min(2) {
+                            for l in 0..all_candidates[3].len().min(2) {
+                                let (word1, freq1) = &all_candidates[0][i];
+                                let (word2, freq2) = &all_candidates[1][j];
+                                let (word3, freq3) = &all_candidates[2][k];
+                                let (word4, freq4) = &all_candidates[3][l];
+                                let text = format!("{}{}{}{}", word1, word2, word3, word4);
+                                let freq_score = (freq1 + freq2 + freq3 + freq4) as f32 / 1000.0;
+                                let pos_penalty = (i + j + k + l) as f32 * 0.03;
+                                combinations.push((text, freq_score - pos_penalty));
+                            }
                         }
                     }
                 }
@@ -571,7 +730,7 @@ impl InputEngine {
                 state.candidates.push(Candidate {
                     text,
                     pinyin: syllables.join(""),
-                    score,
+                    score: 50.0 + score, // Medium priority: higher than single chars, lower than complete phrases
                     source: PredictionSource::Dictionary,
                 });
             }
@@ -624,9 +783,13 @@ impl InputEngine {
         // Update context
         state.context.push_str(&candidate.text);
 
-        // Limit context length (use truncate for safe UTF-8 handling)
-        if state.context.len() > 100 {
-            state.context.truncate(100);
+        // Limit context length by characters (not bytes)
+        const MAX_CONTEXT_CHARS: usize = 100;
+        let current_chars = state.context.chars().count();
+        if current_chars > MAX_CONTEXT_CHARS {
+            // Truncate to MAX_CONTEXT_CHARS safely
+            let truncated: String = state.context.chars().take(MAX_CONTEXT_CHARS).collect();
+            state.context = truncated;
         }
 
         // Clear preedit
@@ -660,6 +823,15 @@ impl InputEngine {
     pub fn get_current_page(&self, ic: *mut FcitxInputContext) -> usize {
         let state = self.get_state(ic);
         state.current_page
+    }
+
+    /// Get selected candidate index within current page (relative index 0 to page_size-1)
+    pub fn get_selected_index(&self, ic: *mut FcitxInputContext) -> usize {
+        let state = self.get_state(ic);
+        // Convert global index to page-relative index
+        let page_start = state.current_page * self.config.input.page_size;
+        let relative_index = state.selected_index.saturating_sub(page_start);
+        relative_index
     }
 
     /// Get total number of candidates

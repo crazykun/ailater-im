@@ -27,3 +27,5 @@ Thumbs.db
 AGENTS.md
 CLAUDE.md
 config-tool/target/*
+build/*
+*.deb

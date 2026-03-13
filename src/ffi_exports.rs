@@ -136,7 +136,7 @@ pub extern "C" fn fcitx_im_get_entries() -> *mut FcitxIMEntry {
         FcitxIMEntry {
             unique_name: b"ai-later\0".as_ptr() as *const c_char,
             name: b"AI Later\0".as_ptr() as *const c_char,
-            icon_name: b"ailater-im\0".as_ptr() as *const c_char,
+            icon_name: b"fcitx-ailater-im\0".as_ptr() as *const c_char,
             priority: 100,
             lang_code: b"zh_CN\0".as_ptr() as *const c_char,
             user_data: ptr::null_mut(),
@@ -224,6 +224,7 @@ pub struct ResetCallback {
 mod tests {
     use super::*;
     use std::mem::size_of;
+    use std::ffi::CStr;
     
     #[test]
     fn test_struct_sizes() {

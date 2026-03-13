@@ -242,6 +242,31 @@ dist: release
 	tar -czvf ailater-im-$(shell date +%Y%m%d).tar.gz dist/
 	rm -rf dist
 
+# Package version
+VERSION ?= 0.1.0
+ARCH := $(shell dpkg --print-architecture)
+DEB_DIR = build/deb
+DEB_PACKAGE = ailater-im_$(VERSION)_$(ARCH).deb
+
+# Create .deb package
+deb: build config-tool
+	@echo "Creating .deb package..."
+	@rm -rf $(DEB_DIR)
+	@mkdir -p $(DEB_DIR)/DEBIAN
+	@$(MAKE) install DESTDIR=$(CURDIR)/$(DEB_DIR)
+	@echo "Package: ailater-im" > $(DEB_DIR)/DEBIAN/control
+	@echo "Version: $(VERSION)" >> $(DEB_DIR)/DEBIAN/control
+	@echo "Section: utils" >> $(DEB_DIR)/DEBIAN/control
+	@echo "Priority: optional" >> $(DEB_DIR)/DEBIAN/control
+	@echo "Architecture: $(ARCH)" >> $(DEB_DIR)/DEBIAN/control
+	@echo "Depends: fcitx5, libc6 (>= 2.31)" >> $(DEB_DIR)/DEBIAN/control
+	@echo "Maintainer: ailater-im <ailater@example.com>" >> $(DEB_DIR)/DEBIAN/control
+	@echo "Description: AI-powered input method for fcitx5" >> $(DEB_DIR)/DEBIAN/control
+	@echo " An intelligent input method engine with AI prediction" >> $(DEB_DIR)/DEBIAN/control
+	@echo " and pinyin input support." >> $(DEB_DIR)/DEBIAN/control
+	@dpkg-deb --build $(DEB_DIR) $(DEB_PACKAGE)
+	@echo "Package created: $(DEB_PACKAGE)"
+
 help:
 	@echo "ailater-im Makefile (Cargo Workspace)"
 	@echo ""
@@ -262,6 +287,7 @@ help:
 	@echo "  fmt          - Format code (all)"
 	@echo "  lint         - Run clippy linter (workspace)"
 	@echo "  dist         - Create distribution archive"
+	@echo "  deb          - Create .deb package (VERSION=x.x.x)"
 	@echo ""
 	@echo "Variables:"
 	@echo "  PREFIX       - Installation prefix (default: /usr)"

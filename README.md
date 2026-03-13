@@ -185,7 +185,7 @@ local_model_path = "/path/to/model.gguf"
 fuzzy_pinyin = true
 
 # 候选词数量
-num_candidates = 10
+num_candidates = 30
 
 # 智能纠错
 smart_correction = true

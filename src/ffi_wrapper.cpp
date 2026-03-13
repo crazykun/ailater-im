@@ -31,6 +31,7 @@ extern "C" {
     const char** ailater_engine_get_candidates(void* engine, void* ic);
     size_t ailater_engine_get_candidate_count(void* engine, void* ic);
     size_t ailater_engine_get_current_page(void* engine, void* ic);
+    size_t ailater_engine_get_selected_index(void* engine, void* ic);
     void ailater_engine_free_string(char* s);
 }
 
@@ -102,9 +103,7 @@ public:
         if (key.states().test(KeyState::Super)) state |= (1 << 3);
 
         // fcitx5 KeySym values for arrow and page keys
-        const uint32_t FcitxKey_Left = 0xff51;
         const uint32_t FcitxKey_Up = 0xff52;
-        const uint32_t FcitxKey_Right = 0xff53;
         const uint32_t FcitxKey_Down = 0xff54;
         const uint32_t FcitxKey_PageUp = 0xff55;
         const uint32_t FcitxKey_PageDown = 0xff56;
@@ -117,29 +116,29 @@ public:
         bool hasCandidates = (candidateCount > 0);
 
         // Handle paging keys when we have candidates
+        // Up/Down for page navigation, Left/Right are passed to Rust for candidate selection
         if (hasCandidates) {
             int pageSize = instance_->globalConfig().defaultPageSize();
             size_t currentPage = ailater_engine_get_current_page(engine_, ic);
             size_t maxPage = (candidateCount - 1) / pageSize;
 
-            // Next page keys: =, +, PageDown, Down, Right
+            // Next page keys: =, +, PageDown, Down
             // Only allow if not on last page
             if ((keysym == FcitxKey_equal || keysym == FcitxKey_plus ||
-                 keysym == FcitxKey_PageDown || keysym == FcitxKey_Down ||
-                 keysym == FcitxKey_Right) && currentPage < maxPage) {
+                 keysym == FcitxKey_PageDown || keysym == FcitxKey_Down) && currentPage < maxPage) {
                 keyEvent.filterAndAccept();
-                // Call Rust engine with Plus keysym to advance page
-                ailater_engine_handle_key(engine_, ic, 0x002b, 0, 0, false);
+                // Call Rust engine with Down keysym to advance page
+                ailater_engine_handle_key(engine_, ic, FcitxKey_Down, 0, 0, false);
                 updateUI(ic);
                 return;
             }
-            // Previous page keys: -, PageUp, Up, Left
+            // Previous page keys: -, PageUp, Up
             // Only allow if not on first page
             if ((keysym == FcitxKey_minus || keysym == FcitxKey_PageUp ||
-                 keysym == FcitxKey_Up || keysym == FcitxKey_Left) && currentPage > 0) {
+                 keysym == FcitxKey_Up) && currentPage > 0) {
                 keyEvent.filterAndAccept();
-                // Call Rust engine with Minus keysym to go back
-                ailater_engine_handle_key(engine_, ic, 0x002d, 0, 0, false);
+                // Call Rust engine with Up keysym to go back
+                ailater_engine_handle_key(engine_, ic, FcitxKey_Up, 0, 0, false);
                 updateUI(ic);
                 return;
             }
@@ -232,8 +231,9 @@ public:
                     candidateList->append(std::move(candidateWord));
                 }
 
-                // Set cursor to first candidate of current page (index 0)
-                candidateList->setCursorIndex(0);
+                // Set cursor to the selected candidate from Rust engine
+                size_t selectedIndex = ailater_engine_get_selected_index(engine_, ic);
+                candidateList->setCursorIndex(static_cast<int>(selectedIndex));
 
                 ic->inputPanel().setCandidateList(std::move(candidateList));
             } else {
