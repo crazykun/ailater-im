@@ -349,12 +349,18 @@ pub extern "C" fn ailater_engine_select_candidate(
     let ic = ic as *mut FcitxInputContext;
 
     let candidates_before = engine.get_candidates(ic);
+    let current_page = engine.get_current_page(ic);
+    // Get page size from config instead of hardcoding
+    let page_size = engine.get_config_page_size();
 
-    if index >= candidates_before.len() {
+    // Convert page-relative index to global index
+    let global_index = current_page * page_size + index;
+
+    if global_index >= candidates_before.len() {
         return ptr::null_mut();
     }
 
-    let committed_text = candidates_before[index].text.clone();
+    let committed_text = candidates_before[global_index].text.clone();
 
     // Simulate pressing the number key (1-9 => keysym 0x31-0x39)
     let keysym = 0x30 + (index + 1) as u32;

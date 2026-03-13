@@ -669,7 +669,7 @@ impl InputEngine {
 
         // Generate combinations with frequency-based scoring
         let mut combinations = Vec::new();
-        let max_per_syllable = 2; // Reduced from 3 to limit combinations (2x2=4 instead of 3x3=9)
+        let max_per_syllable = 2;
 
         // Simple cartesian product for small number of syllables
         if syllables.len() == 2 {
@@ -705,6 +705,7 @@ impl InputEngine {
             }
         } else if syllables.len() == 4 {
             if all_candidates.iter().all(|c| !c.is_empty()) {
+                // Only generate 4 combinations (2×2×2×2=4) to avoid too many
                 for i in 0..all_candidates[0].len().min(2) {
                     for j in 0..all_candidates[1].len().min(2) {
                         for k in 0..all_candidates[2].len().min(2) {
@@ -828,16 +829,19 @@ impl InputEngine {
     /// Get selected candidate index within current page (relative index 0 to page_size-1)
     pub fn get_selected_index(&self, ic: *mut FcitxInputContext) -> usize {
         let state = self.get_state(ic);
-        // Convert global index to page-relative index
-        let page_start = state.current_page * self.config.input.page_size;
-        let relative_index = state.selected_index.saturating_sub(page_start);
-        relative_index
+        // selected_index is already page-relative (0 to page_size-1)
+        state.selected_index
     }
 
     /// Get total number of candidates
     pub fn get_total_candidates(&self, ic: *mut FcitxInputContext) -> usize {
         let state = self.get_state(ic);
         state.candidates.len()
+    }
+
+    /// Get page size from config
+    pub fn get_config_page_size(&self) -> usize {
+        self.config.input.page_size
     }
 
     /// Get commit text and clear it (for C++ to retrieve and actually commit)
