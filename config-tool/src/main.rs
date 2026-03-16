@@ -463,7 +463,7 @@ impl ConfigApp {
                 if ui
                     .add(egui::Slider::new(
                         &mut self.config.input.num_candidates,
-                        5..=20,
+                        5..=100,
                     ))
                     .changed()
                 {
